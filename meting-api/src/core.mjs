@@ -196,6 +196,21 @@ async function loadTracks(meting, server, type, id, limit) {
 	return normalizeTrackList(parseJson(await meting.playlist(id), []), server);
 }
 
+function buildOuterUrl(server, songId) {
+	if (!songId) return "";
+	const id = String(songId);
+	if (server === "netease") {
+		return `https://music.163.com/song/media/outer/url?id=${id}.mp3`;
+	}
+	if (server === "tencent") {
+		return `https://dl.stream.qqmusic.qq.com/${id}.mp3`;
+	}
+	if (server === "kugou") {
+		return `https://www.kugou.com/song/#hash=${id}`;
+	}
+	return "";
+}
+
 async function enrichTrack(meting, track, bitrate, picSize) {
 	const [url, pic] = await Promise.all([
 		track.url
@@ -203,7 +218,9 @@ async function enrichTrack(meting, track, bitrate, picSize) {
 			: meting
 					.url(track.url_id || track.id, bitrate)
 					.then(extractResourceUrl)
-					.catch(() => ""),
+					.catch(() => {
+						return "";
+					}),
 		track.pic
 			? Promise.resolve(track.pic)
 			: track.pic_id
@@ -214,6 +231,8 @@ async function enrichTrack(meting, track, bitrate, picSize) {
 				: Promise.resolve(""),
 	]);
 
+	const finalUrl = url || buildOuterUrl(track.source, track.url_id || track.id);
+
 	return {
 		id: track.id,
 		name: track.name,
@@ -222,7 +241,7 @@ async function enrichTrack(meting, track, bitrate, picSize) {
 		author: track.artist,
 		album: track.album,
 		pic: normalizeResourceUrl(pic),
-		url: normalizeResourceUrl(url),
+		url: normalizeResourceUrl(finalUrl),
 		duration: track.duration,
 		source: track.source,
 	};
