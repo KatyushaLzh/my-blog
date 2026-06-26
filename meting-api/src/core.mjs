@@ -91,6 +91,13 @@ function normalizeResourceUrl(value) {
 	return raw;
 }
 
+function encodeProxyUrl(rawUrl, basePath) {
+	if (!rawUrl) return "";
+	if (!basePath) return normalizeResourceUrl(rawUrl);
+	const encoded = encodeURIComponent(rawUrl);
+	return `${basePath}?url=${encoded}`;
+}
+
 function normalizeTrack(raw, server) {
 	return {
 		id: readString(raw.id) ?? "",
@@ -234,6 +241,10 @@ export async function handleMetingUrl(url) {
 		10,
 	);
 	const onlyPlayable = url.searchParams.get("only_playable") === "true";
+	const proxyEnabled = url.searchParams.get("proxy") === "true";
+	const proxyBase = proxyEnabled
+		? `${url.pathname}?server=proxy&type=audio`
+		: "";
 	const limit = Math.max(
 		1,
 		Math.min(
@@ -252,7 +263,7 @@ export async function handleMetingUrl(url) {
 		return { status: 400, payload: { error: "Missing id" } };
 	}
 
-	const cacheKey = `${server}:${type}:${id}:${bitrate}:${picSize}:${limit}:${onlyPlayable}`;
+	const cacheKey = `${server}:${type}:${id}:${bitrate}:${picSize}:${limit}:${onlyPlayable}:${proxyEnabled}`;
 	const cached = cache.get(cacheKey);
 	if (cached && cached.expiresAt > Date.now()) {
 		return { status: 200, payload: cached.payload };
@@ -271,9 +282,15 @@ export async function handleMetingUrl(url) {
 		ENRICH_CONCURRENCY,
 		(track) => enrichTrack(meting, track, bitrate, picSize),
 	);
-	const payload = onlyPlayable
+	const filtered = onlyPlayable
 		? enriched.filter((track) => Boolean(track.url))
 		: enriched;
+	const payload = proxyEnabled
+		? filtered.map((track) => ({
+				...track,
+				url: encodeProxyUrl(track.url, proxyBase),
+			}))
+		: filtered;
 
 	cache.set(cacheKey, {
 		expiresAt: Date.now() + CACHE_TTL_MS,

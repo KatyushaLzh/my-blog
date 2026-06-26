@@ -1,7 +1,7 @@
 import type { MusicPlayerConfig } from "../types/config";
 
 const defaultMetingApi =
-	"/api/meting?server=:server&type=:type&id=:id&auth=:auth&r=:r";
+	"/api/meting?server=:server&type=:type&id=:id&proxy=true&only_playable=true&bitrate=128&r=:r";
 const configuredMetingApi = import.meta.env.PUBLIC_METING_API;
 const isInvalidProductionMetingApi =
 	configuredMetingApi?.includes("localhost") ||
