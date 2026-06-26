@@ -3,32 +3,36 @@ import {
 	handleMetingUrl,
 } from "../meting-api/src/core.mjs";
 
-function jsonResponse(status, payload) {
-	return new Response(JSON.stringify(payload), {
-		status,
-		headers: createJsonHeaders(status),
-	});
+function writeJson(response, status, payload) {
+	const headers = createJsonHeaders(status);
+	for (const [key, value] of Object.entries(headers)) {
+		response.setHeader(key, value);
+	}
+	response.status(status).send(JSON.stringify(payload));
 }
 
-export default {
-	async fetch(request) {
-		if (request.method === "OPTIONS") {
-			return jsonResponse(204, {});
-		}
+export default async function handler(request, response) {
+	if (request.method === "OPTIONS") {
+		writeJson(response, 204, {});
+		return;
+	}
 
-		if (request.method !== "GET") {
-			return jsonResponse(405, { error: "Method not allowed" });
-		}
+	if (request.method !== "GET") {
+		writeJson(response, 405, { error: "Method not allowed" });
+		return;
+	}
 
-		try {
-			const result = await handleMetingUrl(new URL(request.url));
-			return jsonResponse(result.status, result.payload);
-		} catch (error) {
-			console.error(error);
-			return jsonResponse(502, {
-				error: "Failed to fetch music data",
-				message: error instanceof Error ? error.message : String(error),
-			});
-		}
-	},
-};
+	const host = request.headers.host ?? "localhost";
+	const url = new URL(request.url ?? "/", `https://${host}`);
+
+	try {
+		const result = await handleMetingUrl(url);
+		writeJson(response, result.status, result.payload);
+	} catch (error) {
+		console.error(error);
+		writeJson(response, 502, {
+			error: "Failed to fetch music data",
+			message: error instanceof Error ? error.message : String(error),
+		});
+	}
+}

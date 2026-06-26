@@ -3,6 +3,7 @@
 
 interface ImportMetaEnv {
 	readonly PUBLIC_METING_API?: string;
+	readonly PROD: boolean;
 }
 
 interface ImportMeta {

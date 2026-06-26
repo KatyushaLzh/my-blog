@@ -83,6 +83,14 @@ function readNumber(value) {
 	return undefined;
 }
 
+function normalizeResourceUrl(value) {
+	const raw = readString(value) ?? "";
+	if (raw.startsWith("http://")) {
+		return `https://${raw.slice("http://".length)}`;
+	}
+	return raw;
+}
+
 function normalizeTrack(raw, server) {
 	return {
 		id: readString(raw.id) ?? "",
@@ -101,12 +109,8 @@ function normalizeTrack(raw, server) {
 			readString(raw.lyricId) ??
 			readString(raw.id) ??
 			"",
-		pic:
-			readString(raw.pic) ??
-			readString(raw.cover) ??
-			readString(raw.picUrl) ??
-			"",
-		url: readString(raw.url) ?? readString(raw.src) ?? "",
+		pic: normalizeResourceUrl(raw.pic ?? raw.cover ?? raw.picUrl),
+		url: normalizeResourceUrl(raw.url ?? raw.src),
 		duration:
 			readNumber(raw.duration) ??
 			readNumber(raw.dur) ??
@@ -133,14 +137,11 @@ function extractResourceUrl(payload) {
 		return extractResourceUrl(data[0]);
 	}
 	if (typeof data === "string") {
-		return data;
+		return normalizeResourceUrl(data);
 	}
 	if (data && typeof data === "object") {
-		return (
-			readString(data.url) ??
-			readString(data.pic) ??
-			readString(data.src) ??
-			readString(data.data)
+		return normalizeResourceUrl(
+			data.url ?? data.pic ?? data.src ?? data.data,
 		);
 	}
 	return "";
@@ -213,8 +214,8 @@ async function enrichTrack(meting, track, bitrate, picSize) {
 		artist: track.artist,
 		author: track.artist,
 		album: track.album,
-		pic: pic ?? "",
-		url: url ?? "",
+		pic: normalizeResourceUrl(pic),
+		url: normalizeResourceUrl(url),
 		duration: track.duration,
 		source: track.source,
 	};
