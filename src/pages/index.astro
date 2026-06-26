@@ -1,0 +1,129 @@
+---
+import { Icon } from "astro-icon/components";
+import MainGridLayout from "@layouts/MainGridLayout.astro";
+import BlogTerminal from "@components/features/posts/BlogTerminal.astro";
+import { FolderCard, PostCard } from "@components/features/posts";
+import {
+	getCategoryCardMeta,
+	getCategoryTree,
+	parseCategorySegments,
+} from "@utils/category-tree";
+import { getCodeFilesInDir } from "@utils/code-files";
+import { getSortedPosts } from "@utils/content-utils";
+import { buildTerminalFs } from "@utils/terminal-fs";
+import { url } from "@utils/url-utils";
+import I18nKey from "@i18n/i18nKey";
+import { i18n } from "@i18n/translation";
+
+const tree = await getCategoryTree();
+const allPosts = await getSortedPosts();
+const rootCodeFiles = getCodeFilesInDir("");
+const terminalFs = await buildTerminalFs();
+
+const rootPosts = allPosts.filter(
+	(p) => parseCategorySegments(p.id).length === 0,
+);
+
+interface DirRow {
+	fullPath: string;
+	name: string;
+	count: number;
+	newest: string;
+	image: string;
+	basePath: string;
+}
+
+const dirs: DirRow[] = [];
+for (const node of tree) {
+	const { newestPost, cover } = getCategoryCardMeta(node);
+	dirs.push({
+		fullPath: node.fullPath,
+		name: node.name,
+		count: node.count,
+		newest:
+			newestPost
+				? newestPost.data.published.toISOString().slice(0, 10)
+				: "—",
+		image: cover?.image || "",
+		basePath: cover?.basePath || "",
+	});
+}
+
+const sortedRootPosts = [...rootPosts].sort(
+	(a, b) =>
+		b.data.published.getTime() - a.data.published.getTime(),
+);
+
+const empty =
+	dirs.length === 0 &&
+	sortedRootPosts.length === 0 &&
+	rootCodeFiles.length === 0;
+---
+
+<MainGridLayout>
+	<div class="card-base px-6 md:px-9 pt-6 pb-4 mb-4">
+		<div class="text-xs text-30 mb-3 font-mono select-none">
+			{i18n(I18nKey.home)}/
+		</div>
+		<BlogTerminal fsTree={terminalFs} currentPath="/" />
+		<div class="flex flex-col gap-4">
+			{
+				dirs.map((d) => (
+					<FolderCard
+						name={d.name}
+						href={url(`/posts/${d.fullPath}/`)}
+						count={d.count}
+						newest={d.newest}
+						image={d.image}
+						basePath={d.basePath}
+					/>
+				))
+			}
+			{sortedRootPosts.map((post) => (
+				<PostCard entry={post} />
+			))}
+			{
+				rootCodeFiles.map((cf) => (
+					<a
+						href={url(`/posts/${cf.id}/`)}
+						class="card-base flex flex-col w-full rounded-[var(--radius-large)]
+							overflow-hidden relative group
+							hover:border-[var(--primary)] transition-colors"
+					>
+						<div class="px-6 md:px-9 py-5">
+							<div class="flex items-center gap-3 mb-2">
+								<Icon
+									name="material-symbols:code-rounded"
+									class="text-[var(--primary)] text-3xl"
+								/>
+								<span class="font-bold text-xl text-90 group-hover:text-[var(--primary)] transition-colors">
+									{cf.name}
+								</span>
+							</div>
+							<div class="flex items-center gap-4 text-sm text-50">
+								<span>
+									{cf.content.split(
+										"\n",
+									).length} lines
+								</span>
+								<span>
+									{cf.ext.replace(
+										".",
+										"",
+									).toUpperCase()}
+								</span>
+							</div>
+						</div>
+					</a>
+				))
+			}
+		</div>
+		{
+			empty && (
+				<div class="text-center text-50 py-8">
+					{i18n(I18nKey.notFound)}
+				</div>
+			)
+		}
+	</div>
+</MainGridLayout>

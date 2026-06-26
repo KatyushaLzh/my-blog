@@ -1,0 +1,11 @@
+---
+import { url } from "@utils/url-utils";
+const homeUrl = url("/");
+---
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="refresh" content={`0;url=${homeUrl}`} />
+		<link rel="canonical" href={homeUrl} />
+	</head>
+</html>

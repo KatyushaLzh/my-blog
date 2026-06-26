@@ -1,0 +1,328 @@
+---
+import { Icon } from "astro-icon/components";
+import type { TerminalDirectory } from "@utils/terminal-fs";
+
+interface Props {
+	fsTree: TerminalDirectory;
+	currentPath?: string;
+}
+
+const { fsTree, currentPath = "/" }: Props = Astro.props;
+const fsJson = JSON.stringify(fsTree).replace(/</g, "\\u003c");
+---
+
+<section
+	class="blog-terminal mb-4 font-mono text-sm"
+	data-blog-terminal
+	data-current-path={currentPath}
+	aria-label="Simulated zsh terminal"
+>
+	<script
+		is:inline
+		type="application/json"
+		data-blog-terminal-fs
+		set:html={fsJson}
+	/>
+
+	<div class="blog-terminal-screen">
+		<div
+			class="blog-terminal-output"
+			data-terminal-output
+			aria-live="polite"
+		></div>
+
+		<div class="blog-terminal-prompt">
+			<div class="blog-terminal-powerline">
+				<div class="blog-terminal-left">
+					<span class="terminal-segment terminal-segment-user">
+						<Icon
+							name="material-symbols:person-rounded"
+							class="terminal-segment-icon"
+						/>
+						<span>katyusha</span>
+					</span>
+					<span class="terminal-segment terminal-segment-host">
+						<Icon
+							name="material-symbols:computer-outline-rounded"
+							class="terminal-segment-icon"
+						/>
+						<span>Katyusha-PC</span>
+					</span>
+					<span class="terminal-segment terminal-segment-path">
+						<Icon
+							name="material-symbols:folder-open-rounded"
+							class="terminal-segment-icon"
+						/>
+						<span class="terminal-path-text" data-terminal-cwd>/</span>
+					</span>
+				</div>
+				<div class="blog-terminal-right">
+					<span class="terminal-segment terminal-segment-time">
+						<time data-terminal-time>00:00:00</time>
+						<Icon
+							name="material-symbols:nest-clock-farsight-analog-outline-rounded"
+							class="terminal-segment-icon"
+						/>
+					</span>
+				</div>
+			</div>
+			<label class="blog-terminal-input-row">
+				<span class="blog-terminal-chevron">&gt;</span>
+				<input
+					class="blog-terminal-input"
+					data-terminal-input
+					type="text"
+					autocomplete="off"
+					autocapitalize="off"
+					spellcheck="false"
+					aria-label="Terminal command"
+				/>
+			</label>
+		</div>
+	</div>
+</section>
+
+<style is:global>
+	.blog-terminal {
+		border-radius: 0;
+		overflow: hidden;
+		background: #090909;
+		border: 1px solid color-mix(in oklch, var(--line-divider) 70%, transparent);
+		box-shadow: 0 10px 28px rgba(0, 0, 0, 0.16);
+	}
+
+	.blog-terminal-screen {
+		min-height: 6.25rem;
+		padding: 0.5rem 0.85rem 0.8rem;
+		background: #090909;
+		color: #e7e7e7;
+	}
+
+	.blog-terminal-output {
+		max-height: 18rem;
+		overflow-y: auto;
+		padding-right: 0.25rem;
+		color: #e7e7e7;
+	}
+
+	.blog-terminal-output:empty {
+		display: none;
+	}
+
+	.blog-terminal-history {
+		margin-bottom: 0.75rem;
+	}
+
+	.blog-terminal-result {
+		margin-top: 0.2rem;
+		color: #e7e7e7;
+	}
+
+	.blog-terminal-line {
+		display: block;
+		color: #e7e7e7;
+		white-space: pre-wrap;
+		overflow-wrap: anywhere;
+		word-break: normal;
+		line-height: 1.45;
+	}
+
+	.blog-terminal-dir {
+		color: #5bb2ff;
+		font-weight: 600;
+	}
+
+	.blog-terminal-powerline {
+		display: flex;
+		align-items: flex-start;
+		justify-content: space-between;
+		gap: 1rem;
+		min-width: 0;
+		line-height: 1;
+	}
+
+	.blog-terminal-left,
+	.blog-terminal-right {
+		display: flex;
+		align-items: center;
+		min-width: 0;
+	}
+
+	.blog-terminal-left {
+		flex: 1 1 auto;
+		overflow: hidden;
+	}
+
+	.blog-terminal-right {
+		flex: 0 0 auto;
+	}
+
+	.terminal-segment {
+		--segment-bg: #5bb2ff;
+		--segment-fg: #101010;
+		position: relative;
+		display: inline-flex;
+		align-items: center;
+		gap: 0.35rem;
+		height: 1.35rem;
+		padding: 0 0.8rem 0 0.45rem;
+		background: var(--segment-bg);
+		color: var(--segment-fg);
+		font-size: clamp(0.72rem, 0.95vw, 0.9rem);
+		font-weight: 500;
+		letter-spacing: 0;
+		white-space: nowrap;
+	}
+
+	.terminal-segment::after {
+		content: "";
+		position: absolute;
+		top: 0;
+		right: -0.85rem;
+		width: 0.85rem;
+		height: 100%;
+		background: var(--segment-bg);
+		clip-path: polygon(0 0, 100% 50%, 0 100%);
+		z-index: 2;
+	}
+
+	.terminal-segment + .terminal-segment {
+		margin-left: 0.85rem;
+		padding-left: 0.65rem;
+	}
+
+	.terminal-segment + .terminal-segment::before {
+		content: "";
+		position: absolute;
+		top: 0;
+		left: -0.85rem;
+		width: 0.85rem;
+		height: 100%;
+		background: #090909;
+		clip-path: polygon(0 0, 100% 50%, 0 100%);
+		z-index: 1;
+	}
+
+	.terminal-segment-user {
+		--segment-bg: #171717;
+		--segment-fg: #5bb2ff;
+	}
+
+	.terminal-segment-host {
+		--segment-bg: #9aff00;
+		--segment-fg: #111111;
+	}
+
+	.terminal-segment-path,
+	.terminal-segment-time {
+		--segment-bg: #5bb2ff;
+		--segment-fg: #111111;
+	}
+
+	.terminal-segment-path {
+		flex: 1 1 auto;
+		min-width: 5.5rem;
+		max-width: 14rem;
+	}
+
+	.terminal-segment-time {
+		flex: 0 0 auto;
+		padding-left: 0.75rem;
+		padding-right: 0.45rem;
+	}
+
+	.terminal-segment-time::before {
+		content: "";
+		position: absolute;
+		top: 0;
+		left: -0.85rem;
+		width: 0.85rem;
+		height: 100%;
+		background: var(--segment-bg);
+		clip-path: polygon(100% 0, 0 50%, 100% 100%);
+	}
+
+	.terminal-segment-time::after {
+		display: none;
+	}
+
+	.terminal-segment-icon {
+		width: 0.78rem;
+		height: 0.78rem;
+		flex: 0 0 auto;
+	}
+
+	.terminal-glyph {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		font-size: 0.9rem;
+		line-height: 1;
+	}
+
+	.terminal-path-text {
+		display: inline-block;
+		max-width: 100%;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		vertical-align: bottom;
+	}
+
+	.blog-terminal-input-row {
+		display: flex;
+		align-items: center;
+		gap: 0.45rem;
+		margin-top: 0.3rem;
+		min-width: 0;
+	}
+
+	.blog-terminal-chevron {
+		color: #9aff00;
+		font-size: 1.2rem;
+		font-weight: 700;
+		line-height: 1;
+	}
+
+	.blog-terminal-input {
+		min-width: 0;
+		flex: 1;
+		border: 0;
+		outline: 0;
+		background: transparent;
+		color: #e7e7e7;
+		caret-color: #9aff00;
+		font: inherit;
+		font-size: 0.95rem;
+	}
+
+	@media (max-width: 768px) {
+		.blog-terminal-screen {
+			padding: 0.45rem 0.55rem 0.7rem;
+		}
+
+		.blog-terminal-powerline {
+			flex-direction: column;
+			gap: 0.4rem;
+		}
+
+		.blog-terminal-left {
+			width: 100%;
+			overflow-x: auto;
+			padding-bottom: 0.1rem;
+		}
+
+		.blog-terminal-right {
+			align-self: flex-end;
+		}
+
+		.terminal-segment {
+			height: 1.55rem;
+			font-size: 1rem;
+			padding-right: 1rem;
+		}
+
+		.terminal-path-text {
+			max-width: 10rem;
+		}
+	}
+</style>
