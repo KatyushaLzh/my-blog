@@ -233,8 +233,7 @@ export async function handleMetingUrl(url) {
 		url.searchParams.get("pic_size") ?? String(DEFAULT_PIC_SIZE),
 		10,
 	);
-	const includeUnplayable =
-		url.searchParams.get("include_unplayable") === "true";
+	const onlyPlayable = url.searchParams.get("only_playable") === "true";
 	const limit = Math.max(
 		1,
 		Math.min(
@@ -253,7 +252,7 @@ export async function handleMetingUrl(url) {
 		return { status: 400, payload: { error: "Missing id" } };
 	}
 
-	const cacheKey = `${server}:${type}:${id}:${bitrate}:${picSize}:${limit}:${includeUnplayable}`;
+	const cacheKey = `${server}:${type}:${id}:${bitrate}:${picSize}:${limit}:${onlyPlayable}`;
 	const cached = cache.get(cacheKey);
 	if (cached && cached.expiresAt > Date.now()) {
 		return { status: 200, payload: cached.payload };
@@ -272,9 +271,9 @@ export async function handleMetingUrl(url) {
 		ENRICH_CONCURRENCY,
 		(track) => enrichTrack(meting, track, bitrate, picSize),
 	);
-	const payload = includeUnplayable
-		? enriched
-		: enriched.filter((track) => Boolean(track.url));
+	const payload = onlyPlayable
+		? enriched.filter((track) => Boolean(track.url))
+		: enriched;
 
 	cache.set(cacheKey, {
 		expiresAt: Date.now() + CACHE_TTL_MS,

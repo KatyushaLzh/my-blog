@@ -333,9 +333,9 @@ class MusicPlayerStore {
 				: Array.isArray(payload?.data)
 					? payload.data
 					: [];
-			this.state.playlist = list
-				.map((song: Record<string, unknown>) => this.convertMetingSong(song))
-				.filter((song: Song) => Boolean(song.url));
+			this.state.playlist = list.map((song: Record<string, unknown>) =>
+				this.convertMetingSong(song),
+			);
 			this.state.isLoading = false;
 
 			if (this.state.playlist.length > 0) {
