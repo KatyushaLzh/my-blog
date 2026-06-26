@@ -91,13 +91,6 @@ function normalizeResourceUrl(value) {
 	return raw;
 }
 
-function encodeProxyUrl(rawUrl, basePath) {
-	if (!rawUrl) return "";
-	if (!basePath) return normalizeResourceUrl(rawUrl);
-	const encoded = encodeURIComponent(rawUrl);
-	return `${basePath}?url=${encoded}`;
-}
-
 function normalizeTrack(raw, server) {
 	return {
 		id: readString(raw.id) ?? "",
@@ -196,21 +189,6 @@ async function loadTracks(meting, server, type, id, limit) {
 	return normalizeTrackList(parseJson(await meting.playlist(id), []), server);
 }
 
-function buildOuterUrl(server, songId) {
-	if (!songId) return "";
-	const id = String(songId);
-	if (server === "netease") {
-		return `https://music.163.com/song/media/outer/url?id=${id}.mp3`;
-	}
-	if (server === "tencent") {
-		return `https://dl.stream.qqmusic.qq.com/${id}.mp3`;
-	}
-	if (server === "kugou") {
-		return `https://www.kugou.com/song/#hash=${id}`;
-	}
-	return "";
-}
-
 async function enrichTrack(meting, track, bitrate, picSize) {
 	const [url, pic] = await Promise.all([
 		track.url
@@ -218,9 +196,7 @@ async function enrichTrack(meting, track, bitrate, picSize) {
 			: meting
 					.url(track.url_id || track.id, bitrate)
 					.then(extractResourceUrl)
-					.catch(() => {
-						return "";
-					}),
+					.catch(() => ""),
 		track.pic
 			? Promise.resolve(track.pic)
 			: track.pic_id
@@ -231,8 +207,6 @@ async function enrichTrack(meting, track, bitrate, picSize) {
 				: Promise.resolve(""),
 	]);
 
-	const finalUrl = url || buildOuterUrl(track.source, track.url_id || track.id);
-
 	return {
 		id: track.id,
 		name: track.name,
@@ -241,7 +215,7 @@ async function enrichTrack(meting, track, bitrate, picSize) {
 		author: track.artist,
 		album: track.album,
 		pic: normalizeResourceUrl(pic),
-		url: normalizeResourceUrl(finalUrl),
+		url: normalizeResourceUrl(url),
 		duration: track.duration,
 		source: track.source,
 	};
@@ -260,10 +234,6 @@ export async function handleMetingUrl(url) {
 		10,
 	);
 	const onlyPlayable = url.searchParams.get("only_playable") === "true";
-	const proxyEnabled = url.searchParams.get("proxy") === "true";
-	const proxyBase = proxyEnabled
-		? `${url.pathname}?server=proxy&type=audio`
-		: "";
 	const limit = Math.max(
 		1,
 		Math.min(
@@ -282,7 +252,7 @@ export async function handleMetingUrl(url) {
 		return { status: 400, payload: { error: "Missing id" } };
 	}
 
-	const cacheKey = `${server}:${type}:${id}:${bitrate}:${picSize}:${limit}:${onlyPlayable}:${proxyEnabled}`;
+	const cacheKey = `${server}:${type}:${id}:${bitrate}:${picSize}:${limit}:${onlyPlayable}`;
 	const cached = cache.get(cacheKey);
 	if (cached && cached.expiresAt > Date.now()) {
 		return { status: 200, payload: cached.payload };
@@ -301,15 +271,9 @@ export async function handleMetingUrl(url) {
 		ENRICH_CONCURRENCY,
 		(track) => enrichTrack(meting, track, bitrate, picSize),
 	);
-	const filtered = onlyPlayable
+	const payload = onlyPlayable
 		? enriched.filter((track) => Boolean(track.url))
 		: enriched;
-	const payload = proxyEnabled
-		? filtered.map((track) => ({
-				...track,
-				url: encodeProxyUrl(track.url, proxyBase),
-			}))
-		: filtered;
 
 	cache.set(cacheKey, {
 		expiresAt: Date.now() + CACHE_TTL_MS,

@@ -149,6 +149,7 @@ class MusicPlayerStore {
 		}
 
 		this.audio = new Audio();
+		this.audio.crossOrigin = "anonymous";
 		this.setupAudioListeners();
 		this.loadVolumeFromStorage();
 		this.registerInteractionHandler();

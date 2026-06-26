@@ -1,26 +1,25 @@
 import type { MusicPlayerConfig } from "../types/config";
 
-const defaultMetingApi =
-	"/api/meting?server=:server&type=:type&id=:id&proxy=true&only_playable=true&bitrate=128&r=:r";
+const defaultMetingApi = import.meta.env.PROD
+	? "/api/meting?server=:server&type=:type&id=:id&r=:r"
+	: "https://api.injahow.cn/meting/?server=:server&type=:type&id=:id&r=:r";
 const configuredMetingApi = import.meta.env.PUBLIC_METING_API;
 const isInvalidProductionMetingApi =
 	configuredMetingApi?.includes("localhost") ||
-	configuredMetingApi?.includes("127.0.0.1") ||
-	configuredMetingApi?.includes("bilibili.uno");
+	configuredMetingApi?.includes("127.0.0.1");
 const shouldUseConfiguredMetingApi =
 	configuredMetingApi &&
 	(!import.meta.env.PROD || !isInvalidProductionMetingApi);
 
-// 音乐播放器配置
 export const musicPlayerConfig: MusicPlayerConfig = {
-	enable: true, // 启用音乐播放器功能
-	showFloatingPlayer: true, // 显示悬浮播放器 UI
-	floatingEntryMode: "fab", // 悬浮入口模式："default" 为独立悬浮播放器，"fab" 为集成到通用 FAB 组
-	mode: "meting", // 音乐播放器模式，可选 "local" 或 "meting"
+	enable: true,
+	showFloatingPlayer: true,
+	floatingEntryMode: "fab",
+	mode: "meting",
 	meting_api: shouldUseConfiguredMetingApi
 		? configuredMetingApi
-		: defaultMetingApi, // Meting API 地址
-	id: "18093458299", // 歌单ID
-	server: "netease", // 音乐源服务器。有的meting的api源支持更多平台,一般来说,netease=网易云音乐, tencent=QQ音乐, kugou=酷狗音乐, xiami=虾米音乐, baidu=百度音乐
-	type: "playlist", // 播单类型
+		: defaultMetingApi,
+	id: "18093458299",
+	server: "netease",
+	type: "playlist",
 };
