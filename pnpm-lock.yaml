@@ -47,6 +47,9 @@ importers:
       '@iconify/svelte':
         specifier: ^5.2.1
         version: 5.2.1(svelte@5.56.3)
+      '@meting/core':
+        specifier: 1.6.1
+        version: 1.6.1
       '@swup/astro':
         specifier: ^1.8.0
         version: 1.8.0
@@ -210,6 +213,12 @@ importers:
       postcss-nesting:
         specifier: ^14.0.0
         version: 14.0.0(postcss@8.5.15)
+
+  meting-api:
+    dependencies:
+      '@meting/core':
+        specifier: latest
+        version: 1.6.1
 
 packages:
 
@@ -1523,6 +1532,9 @@ packages:
 
   '@mdx-js/mdx@3.1.1':
     resolution: {integrity: sha512-f6ZO2ifpwAQIpzGWaBQT2TXxPv6z3RBzQKpVftEWN78Vl/YweF1uwussDx8ECAXVtr3Rs89fKyG9YlzUs9DyGQ==}
+
+  '@meting/core@1.6.1':
+    resolution: {integrity: sha512-6LPRZlZc8hUc0Jmg74tbMBLeoyXoyttPBLoNNpybLZ6GY+de95h9w3YQGh0yDwnrSivqcHMGZ5u5VJym5PdY1w==}
 
   '@nodable/entities@2.1.1':
     resolution: {integrity: sha512-Pig3HxDIoMgjdEH8OCf/dkcTmLFjJRjWuq8jSnklu284/TKOPibSRERmOykiwmyXTtv61mP+44f3GMx0tLAyjg==}
@@ -7597,6 +7609,8 @@ snapshots:
       vfile: 6.0.3
     transitivePeerDependencies:
       - supports-color
+
+  '@meting/core@1.6.1': {}
 
   '@nodable/entities@2.1.1': {}
 

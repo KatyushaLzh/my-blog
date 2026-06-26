@@ -3,6 +3,11 @@
 	"outputDirectory": "dist",
 	"installCommand": "pnpm install",
 	"framework": "astro",
+	"functions": {
+		"api/meting.js": {
+			"maxDuration": 30
+		}
+	},
 	"headers": [
 		{
 			"source": "/(.*)",

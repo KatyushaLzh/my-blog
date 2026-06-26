@@ -1,0 +1,16 @@
+{
+	"name": "katyusha-meting-api",
+	"version": "0.1.0",
+	"type": "module",
+	"private": true,
+	"scripts": {
+		"dev": "node --watch src/server.mjs",
+		"start": "node src/server.mjs"
+	},
+	"dependencies": {
+		"@meting/core": "latest"
+	},
+	"engines": {
+		"node": ">=18"
+	}
+}

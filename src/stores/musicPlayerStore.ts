@@ -44,6 +44,42 @@ function getAssetPath(path: string): string {
 	return `/${path}`;
 }
 
+function readString(value: unknown): string | undefined {
+	if (typeof value === "string" && value.trim()) {
+		return value;
+	}
+	if (typeof value === "number" && Number.isFinite(value)) {
+		return String(value);
+	}
+	if (Array.isArray(value)) {
+		const parts = value
+			.map((item) => readString(item))
+			.filter((item): item is string => Boolean(item));
+		return parts.length > 0 ? parts.join(" / ") : undefined;
+	}
+	if (value && typeof value === "object") {
+		const record = value as Record<string, unknown>;
+		return (
+			readString(record.name) ??
+			readString(record.url) ??
+			readString(record.picUrl) ??
+			readString(record.src)
+		);
+	}
+	return undefined;
+}
+
+function readNumber(value: unknown): number | undefined {
+	if (typeof value === "number" && Number.isFinite(value)) {
+		return value;
+	}
+	if (typeof value === "string") {
+		const parsed = Number.parseInt(value, 10);
+		return Number.isFinite(parsed) ? parsed : undefined;
+	}
+	return undefined;
+}
+
 class MusicPlayerStore {
 	private audio: HTMLAudioElement | null = null;
 	private state: MusicPlayerState;
@@ -291,8 +327,15 @@ class MusicPlayerStore {
 			if (!res.ok) {
 				throw new Error("meting api error");
 			}
-			const list: Record<string, unknown>[] = await res.json();
-			this.state.playlist = list.map((song) => this.convertMetingSong(song));
+			const payload = await res.json();
+			const list = Array.isArray(payload)
+				? payload
+				: Array.isArray(payload?.data)
+					? payload.data
+					: [];
+			this.state.playlist = list
+				.map((song: Record<string, unknown>) => this.convertMetingSong(song))
+				.filter((song: Song) => Boolean(song.url));
 			this.state.isLoading = false;
 
 			if (this.state.playlist.length > 0) {
@@ -306,17 +349,18 @@ class MusicPlayerStore {
 	}
 
 	private convertMetingSong(song: Record<string, unknown>): Song {
-		const name = typeof song.name === "string" ? song.name : undefined;
-		const songTitle = typeof song.title === "string" ? song.title : undefined;
+		const name = readString(song.name);
+		const songTitle = readString(song.title);
 		const title = name ?? songTitle ?? i18n(Key.unknownSong);
-		const artistField =
-			typeof song.artist === "string" ? song.artist : undefined;
-		const author = typeof song.author === "string" ? song.author : undefined;
+		const artistField = readString(song.artist);
+		const author = readString(song.author);
 		const artist = artistField ?? author ?? i18n(Key.unknownArtist);
-		let dur = (song.duration as number | undefined) ?? 0;
-		if (typeof dur === "string") {
-			dur = Number.parseInt(dur, 10);
-		}
+		let dur =
+			readNumber(song.duration) ??
+			readNumber(song.dur) ??
+			readNumber(song.dt) ??
+			readNumber(song.time) ??
+			0;
 		if (dur > 10000) {
 			dur = Math.floor(dur / 1000);
 		}
@@ -325,14 +369,19 @@ class MusicPlayerStore {
 		}
 
 		return {
-			id:
-				typeof song.id === "string"
-					? Number.parseInt(song.id, 10)
-					: ((song.id as number | undefined) ?? 0),
+			id: readNumber(song.id) ?? 0,
 			title,
 			artist,
-			cover: (song.pic as string | undefined) ?? "",
-			url: (song.url as string | undefined) ?? "",
+			cover:
+				readString(song.pic) ??
+				readString(song.cover) ??
+				readString(song.picUrl) ??
+				"",
+			url:
+				readString(song.url) ??
+				readString(song.src) ??
+				readString(song.link) ??
+				"",
 			duration: dur,
 		};
 	}

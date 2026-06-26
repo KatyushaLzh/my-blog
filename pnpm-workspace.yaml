@@ -1,3 +1,7 @@
+packages:
+  - "."
+  - "meting-api"
+
 allowBuilds:
   esbuild: true
   sharp: true
