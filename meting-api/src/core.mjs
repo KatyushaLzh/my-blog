@@ -189,14 +189,50 @@ async function loadTracks(meting, server, type, id, limit) {
 	return normalizeTrackList(parseJson(await meting.playlist(id), []), server);
 }
 
+async function resolveTrackUrl(meting, track, bitrate) {
+	if (track.url) {
+		return track.url;
+	}
+	const songId = track.url_id || track.id;
+	const eapiUrl = await meting
+		.url(songId, bitrate)
+		.then(extractResourceUrl)
+		.catch(() => "");
+	if (eapiUrl) {
+		return normalizeResourceUrl(eapiUrl);
+	}
+	return resolveViaOuterUrl(songId);
+}
+
+async function resolveViaOuterUrl(songId) {
+	if (!songId) return "";
+	const ac = new AbortController();
+	const timer = setTimeout(() => ac.abort(), 5000);
+	try {
+		const outerUrl = `https://music.163.com/song/media/outer/url?id=${songId}.mp3`;
+		const resp = await fetch(outerUrl, {
+			redirect: "follow",
+			headers: {
+				Referer: "https://music.163.com/",
+				"User-Agent":
+					"Mozilla/5.0 (Linux; Android 11; wv) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.114 Mobile Safari/537.36 NeteaseMusic/8.7.01",
+			},
+			signal: ac.signal,
+		});
+		clearTimeout(timer);
+		if (resp.url && resp.url !== outerUrl) {
+			return normalizeResourceUrl(resp.url);
+		}
+	} catch {
+		// outer URL fallback failed
+	}
+	clearTimeout(timer);
+	return "";
+}
+
 async function enrichTrack(meting, track, bitrate, picSize) {
 	const [url, pic] = await Promise.all([
-		track.url
-			? Promise.resolve(track.url)
-			: meting
-					.url(track.url_id || track.id, bitrate)
-					.then(extractResourceUrl)
-					.catch(() => ""),
+		resolveTrackUrl(meting, track, bitrate),
 		track.pic
 			? Promise.resolve(track.pic)
 			: track.pic_id
@@ -261,6 +297,15 @@ export async function handleMetingUrl(url) {
 	const Meting = await getMetingCtor();
 	const meting = new Meting(server);
 	meting.format(true);
+
+	const _origCurl = meting._curl.bind(meting);
+	meting._curl = async function (url, body = null, retry = false) {
+		const httpsUrl = url.replace(
+			/^http:\/\/music\.163\.com/,
+			"https://music.163.com",
+		);
+		return _origCurl(httpsUrl, body, retry);
+	};
 
 	const tracks = (await loadTracks(meting, server, type, id, limit)).slice(
 		0,
