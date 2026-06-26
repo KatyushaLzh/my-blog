@@ -12,7 +12,7 @@ const shouldUseConfiguredMetingApi =
 	(!import.meta.env.PROD || !isInvalidProductionMetingApi);
 
 export const musicPlayerConfig: MusicPlayerConfig = {
-	enable: true,
+	enable: false,
 	showFloatingPlayer: true,
 	floatingEntryMode: "fab",
 	mode: "meting",
