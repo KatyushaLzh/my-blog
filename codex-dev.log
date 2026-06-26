@@ -1,0 +1,53 @@
+已加载 .env 配置文件
+
+开始同步内容...
+
+内容目录不存在：C:\Users\Lenovo\Desktop\katyusha-blog\Mizuki\content
+将使用独立仓库模式
+提示：请设置 CONTENT_REPO_URL 环境变量，或手动创建内容目录
+[vite] connected.
+[2m23:29:09[22m [34m[types][39m Generated [2m3ms[22m
+[vite] connected.
+[2m23:29:09[22m [34m[content][39m Syncing content
+[2m23:29:09[22m [34m[content][39m Astro config changed
+[2m23:29:09[22m [34m[content][39m Clearing content store
+[33m[1m23:29:11[22m [WARN] [astro-expressive-code][39m Error while highlighting code block using language "-------------------------" in document "C:\Users\Lenovo\Desktop\katyusha-blog\Mizuki\src\content\posts\CS149\assignment3.md". The language could not be found. Using "txt" instead. Ensure that all required languages are either part of the bundle or custom languages provided in the "langs" config option.
+[33m[1m23:29:11[22m [WARN] [astro-expressive-code][39m Error while highlighting code block using language "-------------------------" in document "C:\Users\Lenovo\Desktop\katyusha-blog\Mizuki\src\content\posts\CS149\assignment3.md". The language could not be found. Using "txt" instead. Ensure that all required languages are either part of the bundle or custom languages provided in the "langs" config option.
+[33m[1m23:29:11[22m [WARN] [astro-expressive-code][39m Error while highlighting code block using language "------------" in document "C:\Users\Lenovo\Desktop\katyusha-blog\Mizuki\src\content\posts\CS149\assignment3.md". The language could not be found. Using "txt" instead. Ensure that all required languages are either part of the bundle or custom languages provided in the "langs" config option.
+[33m[1m23:29:11[22m [WARN] [astro-expressive-code][39m Error while highlighting code block using language "------------" in document "C:\Users\Lenovo\Desktop\katyusha-blog\Mizuki\src\content\posts\CS149\assignment3.md". The language could not be found. Using "txt" instead. Ensure that all required languages are either part of the bundle or custom languages provided in the "langs" config option.
+[33m[1m23:29:11[22m [WARN] [astro-expressive-code][39m Error while highlighting code block using language "------------" in document "C:\Users\Lenovo\Desktop\katyusha-blog\Mizuki\src\content\posts\CS149\assignment3.md". The language could not be found. Using "txt" instead. Ensure that all required languages are either part of the bundle or custom languages provided in the "langs" config option.
+[2m23:29:13[22m [34m[content][39m Synced content
+[2m23:29:13[22m [34m[vite][39m Re-optimizing dependencies because vite config has changed
+[2m23:29:13[22m [34m[vite][39m Port 3000 is in use, trying another one...
+[2m23:29:13[22m [34m[vite][39m Port 3001 is in use, trying another one...
+[42m[1m astro [22m[49m [32mv6.4.6[39m [2mready in[22m 8896 [2mms[22m
+[2m┃[22m Local    [36mhttp://127.0.0.1:3002/[39m
+[2m23:29:13[22m [32mwatching for file changes...[39m
+23:30:22 [vite-plugin-svelte] src/components/features/settings/SettingSection.svelte:60:3 Using `<slot>` to render parent content is deprecated. Use `{@render ...}` tags instead
+https://svelte.dev/e/slot_element_deprecated
+[33m[1m23:30:23[22m [WARN] [astro-expressive-code][39m Error while highlighting code block using language "-------------------------" in document "C:\Users\Lenovo\Desktop\katyusha-blog\Mizuki\src\content\posts\CS149\assignment3.md". The language could not be found. Using "txt" instead. Ensure that all required languages are either part of the bundle or custom languages provided in the "langs" config option.
+[33m[1m23:30:23[22m [WARN] [astro-expressive-code][39m Error while highlighting code block using language "-------------------------" in document "C:\Users\Lenovo\Desktop\katyusha-blog\Mizuki\src\content\posts\CS149\assignment3.md". The language could not be found. Using "txt" instead. Ensure that all required languages are either part of the bundle or custom languages provided in the "langs" config option.
+[33m[1m23:30:23[22m [WARN] [astro-expressive-code][39m Error while highlighting code block using language "------------" in document "C:\Users\Lenovo\Desktop\katyusha-blog\Mizuki\src\content\posts\CS149\assignment3.md". The language could not be found. Using "txt" instead. Ensure that all required languages are either part of the bundle or custom languages provided in the "langs" config option.
+[33m[1m23:30:23[22m [WARN] [astro-expressive-code][39m Error while highlighting code block using language "------------" in document "C:\Users\Lenovo\Desktop\katyusha-blog\Mizuki\src\content\posts\CS149\assignment3.md". The language could not be found. Using "txt" instead. Ensure that all required languages are either part of the bundle or custom languages provided in the "langs" config option.
+[33m[1m23:30:23[22m [WARN] [astro-expressive-code][39m Error while highlighting code block using language "------------" in document "C:\Users\Lenovo\Desktop\katyusha-blog\Mizuki\src\content\posts\CS149\assignment3.md". The language could not be found. Using "txt" instead. Ensure that all required languages are either part of the bundle or custom languages provided in the "langs" config option.
+[2m23:30:30[22m [34m[200][39m / [2m8924ms[22m
+[2m23:30:31[22m [34m[vite][39m [32m✨ new dependencies optimized: [33m@swup/astro/serialise, @swup/astro/idle, @swup/astro/client/Swup, @swup/astro/client/SwupA11yPlugin, @swup/astro/client/SwupScriptsPlugin[32m[39m
+[2m23:30:31[22m [34m[vite][39m [32m✨ optimized dependencies changed. reloading[39m
+[2m23:30:32[22m [34m[200][39m /_image/ [2m761ms[22m
+[2m23:30:32[22m [34m[200][39m /_image/ [2m1198ms[22m
+[2m23:31:00[22m [34m[200][39m / [2m186ms[22m
+[2m23:31:11[22m [34m[200][39m / [2m160ms[22m
+[2m23:31:12[22m [34m[200][39m /api/calendar-data.json [2m3ms[22m
+[2m23:31:13[22m [34m[200][39m /_image/ [2m1016ms[22m
+[2m23:31:50[22m [34m[watch][39m /src/styles/main.css
+[2m23:31:50[22m [34m[200][39m / [2m204ms[22m
+[2m23:31:52[22m [34m[200][39m /_image/ [2m99ms[22m
+[vite] program reload
+[vite] An error happened during full reload
+Failed to load url astro:server-app.js (resolved id: astro:server-app.js). Does the file exist?
+Error: Failed to load url astro:server-app.js (resolved id: astro:server-app.js). Does the file exist?
+    at loadAndTransform (file:///C:/Users/Lenovo/Desktop/katyusha-blog/Mizuki/node_modules/.pnpm/vite@7.3.5_@types+node@25.9_9d1710c633aa778f38c33f22c90c29a2/node_modules/vite/dist/node/chunks/config.js:22739:33)
+[2m23:32:19[22m [34m[200][39m / [2m525ms[22m
+[2m23:33:04[22m [34m[200][39m / [2m48ms[22m
+[2m23:35:06[22m [34m[200][39m /_image/ [2m515ms[22m
+[2m23:35:06[22m [34m[200][39m / [2m667ms[22m
