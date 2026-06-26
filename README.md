@@ -2,9 +2,11 @@
 
 <img align="right" src="logo.png" width="180" alt="Katyusha blog logo">
 
-一个基于 `Astro 6 + TypeScript + Svelte 5` 的静态博客项目，用来承载我的技术笔记、课程总结、实验记录和长期内容工程实践。
+一个基于  的静态博客项目，模板采用[Mizuki]([Mizuki Next Theme](https://docs.mizuki.mysqil.com/))，同时由agent加入了目录树，`zsh shell`等改进
 
-这个仓库不是通用模板展示页，而是我自己的博客源码仓库。内容方向以系统、并发、性能、C++、CUDA、CSAPP、NJU OS 等技术主题为主，写作目标不是“入门科普”，而是尽量把模型、约束、实现细节和性能瓶颈讲清楚。
+用来承载我的技术笔记、课程总结、实验记录和长期内容工程实践。
+
+这个仓库不是通用模板展示页，而是我自己的博客源码仓库。内容方向以系统、并发、性能、C++、等技术主题为主
 
 ![Preview](./README.png)
 
