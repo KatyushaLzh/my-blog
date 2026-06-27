@@ -11,7 +11,7 @@
 	},
 	"headers": [
 		{
-			"source": "/BingSiteAuth.xml",
+			"source": "/(BingSiteAuth.xml|google1f718a5572f26c37.html)",
 			"headers": [
 				{
 					"key": "Cache-Control",
