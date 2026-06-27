@@ -77,9 +77,7 @@ export function getCodeFiles(): CodeFile[] {
 		for (const entry of entries) {
 			if (entry.name.startsWith(".")) continue;
 			const full = path.join(dir, entry.name);
-			const rel = relativePath
-				? `${relativePath}/${entry.name}`
-				: entry.name;
+			const rel = relativePath ? `${relativePath}/${entry.name}` : entry.name;
 
 			if (entry.isDirectory()) {
 				walk(full, rel);
@@ -95,10 +93,7 @@ export function getCodeFiles(): CodeFile[] {
 					content = "[binary file]";
 				}
 				result.push({
-					id: rel
-						.replace(/\\/g, "/")
-						.toLowerCase()
-						.replace(/\s+/g, "-"),
+					id: rel.replace(/\\/g, "/").toLowerCase().replace(/\s+/g, "-"),
 					name: entry.name,
 					ext,
 					content,

@@ -549,8 +549,7 @@ class MusicPlayerStore {
 				const candidates = this.state.playlist
 					.map((_, index) => index)
 					.filter((index) => !this.failedSongIndexes.has(index));
-				newIndex =
-					candidates[Math.floor(Math.random() * candidates.length)];
+				newIndex = candidates[Math.floor(Math.random() * candidates.length)];
 			} else {
 				for (
 					let offset = 1;

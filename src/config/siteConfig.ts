@@ -107,12 +107,8 @@ export const siteConfig: SiteConfig = {
 	banner: {
 		// 支持单张图片或图片数组，当数组长度 > 1 时自动启用轮播
 		src: {
-			desktop: [
-
-			], // 桌面横幅图片
-			mobile: [
-
-			], // 移动横幅图片
+			desktop: [], // 桌面横幅图片
+			mobile: [], // 移动横幅图片
 		}, // 使用本地横幅图片
 
 		position: "center", // 等同于 object-position，仅支持 'top', 'center', 'bottom'。默认为 'center'
@@ -143,8 +139,8 @@ export const siteConfig: SiteConfig = {
 		// 启用后无需手动列举 src.desktop / src.mobile，构建时会自动扫描对应目录
 		autoScan: {
 			enable: true,
-			desktopDir: "public/assets/desktop-banner",    // 桌面端图片目录
-			mobileDir: "public/assets/mobile-banner",      // 移动端图片目录
+			desktopDir: "public/assets/desktop-banner", // 桌面端图片目录
+			mobileDir: "public/assets/mobile-banner", // 移动端图片目录
 			extensions: [".webp", ".jpg", ".jpeg", ".png", ".avif"], // 扫描的图片扩展名
 		},
 
@@ -153,7 +149,7 @@ export const siteConfig: SiteConfig = {
 			title: "Katyusha's blog",
 			switchable: true,
 
-            subtitle: [
+			subtitle: [
 				"少しの眠れぬ夜に、この魔法がほのかに灯るなら",
 				"今がそんなに悪くないって、笑える時まで今日もscience！",
 			],

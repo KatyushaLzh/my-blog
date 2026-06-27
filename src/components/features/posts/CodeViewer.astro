@@ -1,8 +1,12 @@
 ---
-import { Icon } from "astro-icon/components";
-import { Code } from "astro-expressive-code/components";
 import MainGridLayout from "@layouts/MainGridLayout.astro";
-import { getLabelFromExt, getLangFromExt, type CodeFile } from "@utils/code-files";
+import {
+	type CodeFile,
+	getLabelFromExt,
+	getLangFromExt,
+} from "@utils/code-files";
+import { Code } from "astro-expressive-code/components";
+import { Icon } from "astro-icon/components";
 
 interface Props {
 	codeFile: CodeFile;

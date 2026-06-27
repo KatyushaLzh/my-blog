@@ -3,7 +3,6 @@ import { getImage } from "astro:assets";
 import type { CollectionEntry } from "astro:content";
 import { render } from "astro:content";
 import path from "node:path";
-import { Icon } from "astro-icon/components";
 import Comment from "@components/comment/index.astro";
 import {
 	FolderCard,
@@ -14,29 +13,34 @@ import {
 	RelatedPosts,
 	ShareCard,
 } from "@components/features/posts";
-import BlogTerminal from "@components/features/posts/BlogTerminal.astro";
 import { ReadingTime, WordCount } from "@components/features/posts/atoms";
-import PostCard from "@components/features/posts/PostCard.astro";
+import BlogTerminal from "@components/features/posts/BlogTerminal.astro";
 import CodeViewer from "@components/features/posts/CodeViewer.astro";
+import PostCard from "@components/features/posts/PostCard.astro";
 import License from "@components/misc/License.astro";
 import Markdown from "@components/misc/Markdown.astro";
 import MainGridLayout from "@layouts/MainGridLayout.astro";
 import {
-	getCategoryTree,
-	getCategoryCardMeta,
 	findCategoryNode,
+	getCategoryCardMeta,
 	getCategoryPathFromId,
+	getCategoryTree,
 } from "@utils/category-tree";
-import { getCodeFiles, getCodeFilesInDir, type CodeFile } from "@utils/code-files";
+import {
+	type CodeFile,
+	getCodeFiles,
+	getCodeFilesInDir,
+} from "@utils/code-files";
 import { getRelatedPosts, getSortedPosts } from "@utils/content-utils";
 import { hasCustomPermalink, initPostIdMap } from "@utils/permalink-utils";
 import { getPostPublicDescription } from "@utils/post-card-content";
-import { buildTerminalFs, getInitialTerminalPath, type TerminalDirectory } from "@utils/terminal-fs";
 import {
-	getFileDirFromPath,
-	removeFileExtension,
-	url,
-} from "@utils/url-utils";
+	buildTerminalFs,
+	getInitialTerminalPath,
+	type TerminalDirectory,
+} from "@utils/terminal-fs";
+import { getFileDirFromPath, removeFileExtension, url } from "@utils/url-utils";
+import { Icon } from "astro-icon/components";
 import {
 	licenseConfig,
 	permalinkConfig,
@@ -44,12 +48,11 @@ import {
 	relatedPostsConfig,
 	shareConfig,
 } from "src/config";
-
-import I18nKey from "../../i18n/i18nKey";
-import { i18n } from "../../i18n/translation";
 import Image from "../../components/atoms/Image/Image.astro";
 import Encryptor from "../../components/features/auth/Encryptor.astro";
 import { profileConfig, siteConfig } from "../../config";
+import I18nKey from "../../i18n/i18nKey";
+import { i18n } from "../../i18n/translation";
 import { formatDateToYYYYMMDD } from "../../utils/date-utils";
 
 export async function getStaticPaths() {
@@ -142,7 +145,7 @@ const { entry, directorySlug, codeFile } = Astro.props;
 let terminalFs: TerminalDirectory | undefined;
 
 /* ---- directory view ---- */
-	let directoryData:
+let directoryData:
 	| {
 			slugSegments: string[];
 			node: ReturnType<typeof findCategoryNode>;
@@ -161,9 +164,7 @@ if (directorySlug && !entry) {
 	const node = findCategoryNode(tree, slugSegments);
 	const allPosts = await getSortedPosts();
 	const dirPosts = node
-		? allPosts.filter(
-				(p) => getCategoryPathFromId(p.id) === directorySlug,
-			)
+		? allPosts.filter((p) => getCategoryPathFromId(p.id) === directorySlug)
 		: [];
 	const subcategories = node?.children ?? [];
 	const dirCodeFiles = getCodeFilesInDir(directorySlug);
@@ -171,9 +172,7 @@ if (directorySlug && !entry) {
 	const ancestors: { name: string; path: string }[] = [];
 	let accPath = "";
 	for (let i = 0; i < slugSegments.length; i++) {
-		accPath = accPath
-			? `${accPath}/${slugSegments[i]}`
-			: slugSegments[i];
+		accPath = accPath ? `${accPath}/${slugSegments[i]}` : slugSegments[i];
 		ancestors.push({ name: slugSegments[i], path: accPath });
 	}
 
@@ -189,7 +188,7 @@ if (directorySlug && !entry) {
 }
 
 /* ---- article view ---- */
-	let articleData:
+let articleData:
 	| {
 			Content: any;
 			headings: any;
@@ -225,9 +224,9 @@ if (entry) {
 		if (isLocal) {
 			const basePath = getFileDirFromPath(entry.filePath || "");
 			const files = import.meta.glob<ImageMetadata>(
-					"../../**/*.{png,jpg,jpeg,webp,gif,svg,avif}",
-					{ import: "default" },
-				);
+				"../../**/*.{png,jpg,jpeg,webp,gif,svg,avif}",
+				{ import: "default" },
+			);
 			const normalizedPath = path
 				.normalize(path.join("../../", basePath, entry.data.image))
 				.replace(/\\/g, "/");
@@ -272,9 +271,9 @@ if (entry) {
 		);
 		if (isLocal) {
 			const files = import.meta.glob<ImageMetadata>(
-					"../../**/*.{png,jpg,jpeg,webp,gif,svg,avif}",
-					{ import: "default" },
-				);
+				"../../**/*.{png,jpg,jpeg,webp,gif,svg,avif}",
+				{ import: "default" },
+			);
 			const normalizedPath = path
 				.normalize(path.join("../../", profileConfig.avatar))
 				.replace(/\\/g, "/");
