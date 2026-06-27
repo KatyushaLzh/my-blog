@@ -15,7 +15,7 @@ export const musicPlayerConfig: MusicPlayerConfig = {
 	enable: true,
 	showFloatingPlayer: true,
 	floatingEntryMode: "fab",
-	mode: "meting",
+	mode: "local",
 	meting_api: shouldUseConfiguredMetingApi
 		? configuredMetingApi
 		: defaultMetingApi,
