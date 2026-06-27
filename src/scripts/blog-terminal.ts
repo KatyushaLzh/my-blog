@@ -47,6 +47,12 @@ const SCROLL_STORAGE_KEY = "mizuki:blog-terminal:preserved-scroll-y";
 const COMMANDS = ["ls", "cd", "pwd", "cat", "clear"];
 const MAX_OUTPUT = 80;
 const MAX_HISTORY = 100;
+const TERMINAL_ICONS = {
+	user: "material-symbols:person-rounded",
+	host: "material-symbols:computer-outline-rounded",
+	path: "material-symbols:folder-open-rounded",
+	time: "material-symbols:nest-clock-farsight-analog-outline-rounded",
+} as const;
 const INTRO_LINES = [
 	"Mizuki shell ready. Commands: ls, pwd, cat, cd, clear. Use Tab for completion and ArrowUp/ArrowDown for history.",
 ];
@@ -215,6 +221,10 @@ function renderOutputLine(line: string): string {
 		.join("");
 }
 
+function renderTerminalIcon(icon: string): string {
+	return `<iconify-icon icon="${icon}" class="terminal-segment-icon" aria-hidden="true"></iconify-icon>`;
+}
+
 function render(elements: TerminalElements, state: TerminalState): void {
 	elements.cwd.textContent = displayPath(state.cwd);
 	elements.time.textContent = formatTime();
@@ -230,22 +240,22 @@ function render(elements: TerminalElements, state: TerminalState): void {
 				<div class="blog-terminal-powerline">
 					<div class="blog-terminal-left">
 						<span class="terminal-segment terminal-segment-user">
-							<span class="terminal-segment-icon terminal-glyph">●</span>
+							${renderTerminalIcon(TERMINAL_ICONS.user)}
 							<span>katyusha</span>
 						</span>
 						<span class="terminal-segment terminal-segment-host">
-							<span class="terminal-segment-icon terminal-glyph">▱</span>
+							${renderTerminalIcon(TERMINAL_ICONS.host)}
 							<span>Katyusha-PC</span>
 						</span>
 						<span class="terminal-segment terminal-segment-path">
-							<span class="terminal-segment-icon terminal-glyph">▰</span>
+							${renderTerminalIcon(TERMINAL_ICONS.path)}
 							<span class="terminal-path-text">${escapeHtml(displayPath(entry.cwd))}</span>
 						</span>
 					</div>
 					<div class="blog-terminal-right">
 						<span class="terminal-segment terminal-segment-time">
 							<span>${escapeHtml(entry.time)}</span>
-							<span class="terminal-segment-icon terminal-glyph">◴</span>
+							${renderTerminalIcon(TERMINAL_ICONS.time)}
 						</span>
 					</div>
 				</div>

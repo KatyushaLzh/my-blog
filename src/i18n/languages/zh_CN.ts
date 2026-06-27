@@ -117,6 +117,7 @@ export const zh_CN: Translation = {
 	[Key.musicPlayerErrorPlaylist]: "播放列表获取失败",
 	[Key.musicPlayerErrorSong]: "当前歌曲加载失败，尝试加载下一首",
 	[Key.musicPlayerErrorEmpty]: "播放列表中没有可用的歌曲",
+	[Key.musicPlayerErrorAllSongs]: "所有歌曲加载失败，请稍后重试",
 	[Key.unknownSong]: "未知歌曲",
 	[Key.unknownArtist]: "未知艺术家",
 

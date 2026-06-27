@@ -1,8 +1,8 @@
 import type { MusicPlayerConfig } from "../types/config";
 
 const defaultMetingApi = import.meta.env.PROD
-	? "/api/meting?server=:server&type=:type&id=:id&r=:r"
-	: "https://api.injahow.cn/meting/?server=:server&type=:type&id=:id&r=:r";
+	? "/api/meting?server=:server&type=:type&id=:id&r=:r&only_playable=true"
+	: "https://api.injahow.cn/meting/?server=:server&type=:type&id=:id&r=:r&only_playable=true";
 const configuredMetingApi = import.meta.env.PUBLIC_METING_API;
 const isInvalidProductionMetingApi =
 	configuredMetingApi?.includes("localhost") ||
@@ -12,7 +12,7 @@ const shouldUseConfiguredMetingApi =
 	(!import.meta.env.PROD || !isInvalidProductionMetingApi);
 
 export const musicPlayerConfig: MusicPlayerConfig = {
-	enable: false,
+	enable: true,
 	showFloatingPlayer: true,
 	floatingEntryMode: "fab",
 	mode: "meting",
