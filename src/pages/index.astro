@@ -1,8 +1,9 @@
 ---
-import { Icon } from "astro-icon/components";
-import MainGridLayout from "@layouts/MainGridLayout.astro";
-import BlogTerminal from "@components/features/posts/BlogTerminal.astro";
 import { FolderCard, PostCard } from "@components/features/posts";
+import BlogTerminal from "@components/features/posts/BlogTerminal.astro";
+import I18nKey from "@i18n/i18nKey";
+import { i18n } from "@i18n/translation";
+import MainGridLayout from "@layouts/MainGridLayout.astro";
 import {
 	getCategoryCardMeta,
 	getCategoryTree,
@@ -12,8 +13,7 @@ import { getCodeFilesInDir } from "@utils/code-files";
 import { getSortedPosts } from "@utils/content-utils";
 import { buildTerminalFs } from "@utils/terminal-fs";
 import { url } from "@utils/url-utils";
-import I18nKey from "@i18n/i18nKey";
-import { i18n } from "@i18n/translation";
+import { Icon } from "astro-icon/components";
 
 const tree = await getCategoryTree();
 const allPosts = await getSortedPosts();
@@ -40,18 +40,16 @@ for (const node of tree) {
 		fullPath: node.fullPath,
 		name: node.name,
 		count: node.count,
-		newest:
-			newestPost
-				? newestPost.data.published.toISOString().slice(0, 10)
-				: "—",
+		newest: newestPost
+			? newestPost.data.published.toISOString().slice(0, 10)
+			: "—",
 		image: cover?.image || "",
 		basePath: cover?.basePath || "",
 	});
 }
 
 const sortedRootPosts = [...rootPosts].sort(
-	(a, b) =>
-		b.data.published.getTime() - a.data.published.getTime(),
+	(a, b) => b.data.published.getTime() - a.data.published.getTime(),
 );
 
 const empty =

@@ -1,6 +1,6 @@
+import type { CollectionEntry } from "astro:content";
 import fs from "node:fs";
 import path from "node:path";
-import type { CollectionEntry } from "astro:content";
 
 export interface CategoryNode {
 	name: string;
@@ -167,7 +167,9 @@ export function flattenTree(tree: CategoryNode[]): CategoryNode[] {
 	return result;
 }
 
-export function collectCategoryPosts(node: CategoryNode): CollectionEntry<"posts">[] {
+export function collectCategoryPosts(
+	node: CategoryNode,
+): CollectionEntry<"posts">[] {
 	const result = [...node.posts];
 	for (const child of node.children) {
 		result.push(...collectCategoryPosts(child));

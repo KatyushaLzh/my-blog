@@ -1,8 +1,8 @@
 import type { CollectionEntry } from "astro:content";
 import {
+	type CategoryNode,
 	getCategoryTree,
 	parseCategorySegments,
-	type CategoryNode,
 } from "./category-tree";
 import { getCodeFiles, getLabelFromExt } from "./code-files";
 import { getSortedPosts } from "./content-utils";
