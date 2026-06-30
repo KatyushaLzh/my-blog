@@ -9,6 +9,8 @@ export interface CategoryNode {
 	children: CategoryNode[];
 	posts: CollectionEntry<"posts">[];
 	count: number;
+	postCount: number;
+	codeFileCount: number;
 }
 
 export interface CategoryCardMeta {
@@ -75,55 +77,71 @@ export function getCategoryAncestors(
 	}));
 }
 
-export async function getCategoryTree(): Promise<CategoryNode[]> {
-	const { getCollection } = await import("astro:content");
-	const allPosts = await getCollection("posts", ({ data }) => {
-		return import.meta.env.PROD ? data.draft !== true : true;
-	});
-
+export function buildCategoryTreeFromEntries(
+	posts: CollectionEntry<"posts">[],
+	codeFileIds: string[] = [],
+): CategoryNode[] {
 	const nodeMap = new Map<string, CategoryNode>();
 	const roots: CategoryNode[] = [];
 
-	for (const post of allPosts) {
-		const segments = parseCategorySegments(post.id);
-		if (segments.length === 0) continue;
+	function ensurePath(segments: string[]) {
+		if (segments.length === 0) return;
 
 		for (let i = 0; i < segments.length; i++) {
-			const path = segments.slice(0, i + 1).join("/");
-			if (!nodeMap.has(path)) {
+			const rawPath = segments.slice(0, i + 1).join("/");
+			const key = rawPath.toLowerCase();
+			if (!nodeMap.has(key)) {
+				const parentPath = segments.slice(0, i).join("/");
+				const parent = i > 0 ? nodeMap.get(parentPath.toLowerCase()) : undefined;
 				const node: CategoryNode = {
 					name: segments[i],
-					fullPath: path,
+					fullPath: parent ? `${parent.fullPath}/${segments[i]}` : segments[i],
 					depth: i,
 					children: [],
 					posts: [],
 					count: 0,
+					postCount: 0,
+					codeFileCount: 0,
 				};
-				nodeMap.set(path, node);
+				nodeMap.set(key, node);
 				if (i === 0) {
 					roots.push(node);
-				} else {
-					const parentPath = segments.slice(0, i).join("/");
-					const parent = nodeMap.get(parentPath);
-					if (parent) {
-						parent.children.push(node);
-					}
+				} else if (parent) {
+					parent.children.push(node);
 				}
 			}
 		}
+	}
+
+	for (const post of posts) {
+		const segments = parseCategorySegments(post.id);
+		ensurePath(segments);
 
 		const catPath = segments.join("/");
-		const node = nodeMap.get(catPath);
+		const node = nodeMap.get(catPath.toLowerCase());
 		if (node) {
 			node.posts.push(post);
 		}
 	}
 
-	function computeCount(node: CategoryNode): number {
-		node.count = node.posts.length;
-		for (const child of node.children) {
-			node.count += computeCount(child);
+	for (const id of codeFileIds) {
+		const segments = parseCategorySegments(id);
+		ensurePath(segments);
+
+		const catPath = segments.join("/");
+		const node = nodeMap.get(catPath.toLowerCase());
+		if (node) {
+			node.codeFileCount++;
 		}
+	}
+
+	function computeCount(node: CategoryNode): number {
+		node.postCount = node.posts.length;
+		for (const child of node.children) {
+			node.postCount += computeCount(child);
+			node.codeFileCount += child.codeFileCount;
+		}
+		node.count = node.postCount;
 		return node.count;
 	}
 	for (const root of roots) {
@@ -141,13 +159,27 @@ export async function getCategoryTree(): Promise<CategoryNode[]> {
 	return roots;
 }
 
+export async function getCategoryTree(): Promise<CategoryNode[]> {
+	const { getCollection } = await import("astro:content");
+	const { getCodeFiles } = await import("./code-files");
+	const allPosts = await getCollection("posts", ({ data }) => {
+		return import.meta.env.PROD ? data.draft !== true : true;
+	});
+
+	return buildCategoryTreeFromEntries(
+		allPosts,
+		getCodeFiles().map((file) => file.id),
+	);
+}
+
 export function findCategoryNode(
 	tree: CategoryNode[],
 	segments: string[],
 ): CategoryNode | undefined {
 	if (segments.length === 0) return undefined;
+	const current = segments[0].toLowerCase();
 	for (const node of tree) {
-		if (node.name === segments[0]) {
+		if (node.name.toLowerCase() === current) {
 			if (segments.length === 1) return node;
 			return findCategoryNode(node.children, segments.slice(1));
 		}

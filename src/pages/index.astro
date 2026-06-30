@@ -28,6 +28,8 @@ interface DirRow {
 	fullPath: string;
 	name: string;
 	count: number;
+	postCount: number;
+	codeFileCount: number;
 	newest: string;
 	image: string;
 	basePath: string;
@@ -40,6 +42,8 @@ for (const node of tree) {
 		fullPath: node.fullPath,
 		name: node.name,
 		count: node.count,
+		postCount: node.postCount,
+		codeFileCount: node.codeFileCount,
 		newest:
 			newestPost
 				? newestPost.data.published.toISOString().slice(0, 10)
@@ -73,6 +77,8 @@ const empty =
 						name={d.name}
 						href={url(`/posts/${d.fullPath}/`)}
 						count={d.count}
+						postCount={d.postCount}
+						codeFileCount={d.codeFileCount}
 						newest={d.newest}
 						image={d.image}
 						basePath={d.basePath}

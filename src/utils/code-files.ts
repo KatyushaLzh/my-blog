@@ -60,11 +60,7 @@ export function getLabelFromExt(ext: string): string {
 
 let _codeFilesCache: CodeFile[] | null = null;
 
-export function getCodeFiles(): CodeFile[] {
-	_codeFilesCache = null; // always rebuild to pick up new files
-	if (_codeFilesCache) return _codeFilesCache;
-
-	const postsDir = path.resolve("src/content/posts");
+export function collectCodeFilesFromDir(postsDir: string): CodeFile[] {
 	const result: CodeFile[] = [];
 
 	function walk(dir: string, relativePath: string) {
@@ -108,6 +104,15 @@ export function getCodeFiles(): CodeFile[] {
 	}
 
 	walk(postsDir, "");
+	return result;
+}
+
+export function getCodeFiles(): CodeFile[] {
+	_codeFilesCache = null; // always rebuild to pick up new files
+	if (_codeFilesCache) return _codeFilesCache;
+
+	const postsDir = path.resolve("src/content/posts");
+	const result = collectCodeFilesFromDir(postsDir);
 	_codeFilesCache = result;
 	return result;
 }

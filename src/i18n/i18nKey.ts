@@ -34,6 +34,8 @@ enum I18nKey {
 	minutesCount = "minutesCount",
 	postCount = "postCount",
 	postsCount = "postsCount",
+	codeFileCount = "codeFileCount",
+	codeFilesCount = "codeFilesCount",
 
 	themeColor = "themeColor",
 

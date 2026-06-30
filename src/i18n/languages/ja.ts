@@ -45,6 +45,8 @@ export const ja: Translation = {
 	[Key.minutesCount]: "分",
 	[Key.postCount]: "件の投稿",
 	[Key.postsCount]: "件の投稿",
+	[Key.codeFileCount]: "件のコードファイル",
+	[Key.codeFilesCount]: "件のコードファイル",
 
 	[Key.themeColor]: "テーマの色",
 

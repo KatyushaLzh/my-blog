@@ -5,7 +5,9 @@ import path from "node:path";
 import { describe, it } from "node:test";
 
 import {
+	buildCategoryTreeFromEntries,
 	collectCategoryPosts,
+	findCategoryNode,
 	getCategoryCardMeta,
 	type CategoryNode,
 } from "../src/utils/category-tree.ts";
@@ -40,16 +42,55 @@ describe("collectCategoryPosts", () => {
 					children: [],
 					posts: [makePost("root/child/b", "2026-01-02")],
 					count: 1,
+					postCount: 1,
+					codeFileCount: 0,
 				},
 			],
 			posts: [makePost("root/a", "2026-01-01")],
 			count: 2,
+			postCount: 2,
+			codeFileCount: 0,
 		};
 
 		assert.deepEqual(
 			collectCategoryPosts(node).map((post) => post.id),
 			["root/a", "root/child/b"],
 		);
+	});
+});
+
+describe("buildCategoryTreeFromEntries", () => {
+	it("adds directories that only contain code files", () => {
+		const tree = buildCategoryTreeFromEntries(
+			[makePost("others/OS2026/learning", "2026-06-30")],
+			[
+				"others/os2026/ebpf-rca/cmd/ebpf-rca/main.go",
+				"others/os2026/ebpf-rca/bpf/cpu.bpf.c",
+			],
+		);
+
+		const osNode = findCategoryNode(tree, ["others", "os2026"]);
+		const rcaNode = findCategoryNode(tree, [
+			"others",
+			"os2026",
+			"ebpf-rca",
+		]);
+		const cmdNode = findCategoryNode(tree, [
+			"others",
+			"os2026",
+			"ebpf-rca",
+			"cmd",
+		]);
+
+		assert.equal(osNode?.count, 1);
+		assert.equal(osNode?.postCount, 1);
+		assert.equal(osNode?.codeFileCount, 2);
+		assert.equal(rcaNode?.count, 0);
+		assert.equal(rcaNode?.postCount, 0);
+		assert.equal(rcaNode?.codeFileCount, 2);
+		assert.equal(cmdNode?.postCount, 0);
+		assert.equal(cmdNode?.codeFileCount, 1);
+		assert.equal(cmdNode?.fullPath, "others/OS2026/ebpf-rca/cmd");
 	});
 });
 
@@ -80,10 +121,14 @@ describe("getCategoryCardMeta", () => {
 						),
 					],
 					count: 1,
+					postCount: 1,
+					codeFileCount: 0,
 				},
 			],
 			posts: [makePost("root/a", "2026-01-04")],
 			count: 2,
+			postCount: 2,
+			codeFileCount: 0,
 		};
 
 		const meta = getCategoryCardMeta(node, contentPostsDir);
@@ -109,6 +154,8 @@ describe("getCategoryCardMeta", () => {
 			children: [],
 			posts: [makePost("cs149/a", "2026-01-01")],
 			count: 1,
+			postCount: 1,
+			codeFileCount: 0,
 		};
 
 		const meta = getCategoryCardMeta(node, contentPostsDir);
