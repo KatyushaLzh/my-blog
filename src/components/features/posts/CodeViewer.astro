@@ -8,10 +8,20 @@ interface Props {
 	codeFile: CodeFile;
 }
 
+const MAX_HIGHLIGHT_BYTES = 256 * 1024;
+const MAX_HIGHLIGHT_LINES = 5000;
+const LARGE_FILE_PREVIEW_LINES = 800;
+
 const { codeFile } = Astro.props;
 const lang = getLangFromExt(codeFile.ext);
 const typeLabel = getLabelFromExt(codeFile.ext);
-const lines = codeFile.content.split("\n").length;
+const codeLines = codeFile.content.split("\n");
+const lines = codeLines.length;
+const isLargeFile =
+	codeFile.content.length > MAX_HIGHLIGHT_BYTES || lines > MAX_HIGHLIGHT_LINES;
+const previewContent = isLargeFile
+	? codeLines.slice(0, LARGE_FILE_PREVIEW_LINES).join("\n")
+	: codeFile.content;
 ---
 
 <MainGridLayout title={codeFile.name}>
@@ -30,6 +40,19 @@ const lines = codeFile.content.split("\n").length;
 				</div>
 			</div>
 		</div>
-		<Code code={codeFile.content} lang={lang} meta={`title="${codeFile.name}"`} />
+		{
+			isLargeFile ? (
+				<>
+					<div class="mb-4 rounded-xl border border-[var(--line-divider)] bg-[var(--btn-plain-bg-hover)] px-4 py-3 text-sm text-70">
+						This generated file is too large for build-time syntax
+						highlighting. Showing the first {LARGE_FILE_PREVIEW_LINES} of{" "}
+						{lines} lines.
+					</div>
+					<pre class="overflow-x-auto rounded-xl bg-[#0f111a] p-4 text-sm leading-6 text-[#d7dce8]"><code>{previewContent}</code></pre>
+				</>
+			) : (
+				<Code code={codeFile.content} lang={lang} meta={`title="${codeFile.name}"`} />
+			)
+		}
 	</div>
 </MainGridLayout>

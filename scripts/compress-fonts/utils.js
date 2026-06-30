@@ -11,10 +11,23 @@ export const ROOT_DIR = path.join(__dirname, "../..");
  */
 export function readFilesRecursively(dir, fileList = []) {
 	if (!fs.existsSync(dir)) return fileList;
-	const files = fs.readdirSync(dir);
+	let files;
+	try {
+		files = fs.readdirSync(dir);
+	} catch (error) {
+		console.warn(`⚠ Skipping unreadable directory: ${dir} (${error.message})`);
+		return fileList;
+	}
+
 	for (const file of files) {
 		const filePath = path.join(dir, file);
-		const stat = fs.statSync(filePath);
+		let stat;
+		try {
+			stat = fs.statSync(filePath);
+		} catch (error) {
+			console.warn(`⚠ Skipping unreadable path: ${filePath} (${error.message})`);
+			continue;
+		}
 		if (stat.isDirectory()) {
 			readFilesRecursively(filePath, fileList);
 		} else {
