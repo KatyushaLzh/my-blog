@@ -1,6 +1,6 @@
 $ node scripts/sync-content.js || true
 警告：未设置 CONTENT_REPO_URL，将使用本地内容
-$ astro dev "--host" "127.0.0.1"
+$ astro dev "--host" "127.0.0.1" "--port" "3002"
 LaTeX-incompatible input and strict mode is set to 'warn': Unicode text character "该" used in math mode [unicodeTextInMathMode]
 LaTeX-incompatible input and strict mode is set to 'warn': Unicode text character "子" used in math mode [unicodeTextInMathMode]
 LaTeX-incompatible input and strict mode is set to 'warn': Unicode text character "区" used in math mode [unicodeTextInMathMode]
@@ -20,14 +20,8 @@ LaTeX-incompatible input and strict mode is set to 'warn': Unicode text characte
 LaTeX-incompatible input and strict mode is set to 'warn': Unicode text character "左" used in math mode [unicodeTextInMathMode]
 LaTeX-incompatible input and strict mode is set to 'warn': Unicode text character "端" used in math mode [unicodeTextInMathMode]
 LaTeX-incompatible input and strict mode is set to 'warn': Unicode text character "点" used in math mode [unicodeTextInMathMode]
+LaTeX-incompatible input and strict mode is set to 'warn': Unicode text character "，" used in math mode [unicodeTextInMathMode]
 LaTeX-incompatible input and strict mode is set to 'warn': Unicode text character "～" used in math mode [unicodeTextInMathMode]
 LaTeX-incompatible input and strict mode is set to 'warn': Unicode text character "＝" used in math mode [unicodeTextInMathMode]
 LaTeX-incompatible input and strict mode is set to 'warn': Unicode text character "～" used in math mode [unicodeTextInMathMode]
 LaTeX-incompatible input and strict mode is set to 'warn': Unicode text character "～" used in math mode [unicodeTextInMathMode]
-LaTeX-incompatible input and strict mode is set to 'warn': Unicode text character "，" used in math mode [unicodeTextInMathMode]
-
-[ERROR] Image file not found: src/content/posts/cs149/cover.png
-
-[ERROR] Image file not found: src/content/posts/cs149/cover.png
-
-[ERROR] Image file not found: src/content/posts/cs149/cover.png

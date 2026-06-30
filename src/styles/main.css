@@ -19,7 +19,7 @@
 
 /* Migrate from v3 config */
 @theme {
-  --font-sans: "Roboto", "sans-serif", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  --font-sans: "Katyusha Latin", "Noto Sans SC", "Source Han Sans SC", "PingFang SC", "Microsoft YaHei", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 
   --breakpoint-md: 768px;
   --breakpoint-lg: 1280px;
@@ -32,6 +32,15 @@
   src: url("/assets/font/ZenMaruGothic-Medium.ttf") format("truetype");
   font-weight: 500;
   font-display: swap;
+}
+
+/* 仅让英数使用 ZenMaruGothic，避免它的日文/汉字字形抢先命中 */
+@font-face {
+  font-family: "Katyusha Latin";
+  src: url("/assets/font/ZenMaruGothic-Medium.ttf") format("truetype");
+  font-weight: 500;
+  font-display: swap;
+  unicode-range: U+0000-00FF, U+2000-206F;
 }
 
 /* 导入 萝莉体 第二版 字体 */
@@ -60,7 +69,12 @@ html {
 }
 
 body {
+  font-family: var(--font-sans);
   font-size: 18px;
+}
+
+.japanese-field {
+  font-family: "萝莉体 第二版", var(--font-sans);
 }
 
 /* 页面顶部渐变高光效果 */

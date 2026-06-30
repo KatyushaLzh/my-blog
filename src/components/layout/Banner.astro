@@ -42,6 +42,12 @@ const {
 	showWave = siteConfig.banner.waves?.enable ?? true,
 } = Astro.props;
 
+const JAPANESE_RE = /[\u3040-\u30ff\u31f0-\u31ff\uff66-\uff9f]/;
+const subtitleHasJapanese = Array.isArray(overlaySubtitle)
+	? overlaySubtitle.some((text) => JAPANESE_RE.test(text))
+	: JAPANESE_RE.test(overlaySubtitle || "");
+const subtitleClass = subtitleHasJapanese ? "japanese-field" : "";
+
 // 标准化图片数组
 const normalizeToArray = (images: string | string[]): string[] =>
 	Array.isArray(images) ? images : [images];
@@ -651,13 +657,14 @@ const bannerFormats = getImageFormats();
 					)}
 					{overlaySubtitle && (
 						<h2 class="banner-subtitle text-xl lg:text-3xl text-white/90 drop-shadow-md">
-							<span class="inline-block min-h-[1.2em]">
+							<span class={`inline-block min-h-[1.2em] ${subtitleClass}`}>
 								{typewriter && Array.isArray(overlaySubtitle) ? (
 									<TypewriterText
 										text={overlaySubtitle}
 										speed={siteConfig.banner.homeText?.typewriter?.speed}
 										deleteSpeed={siteConfig.banner.homeText?.typewriter?.deleteSpeed}
 										pauseTime={siteConfig.banner.homeText?.typewriter?.pauseTime}
+										class={subtitleClass}
 									/>
 								) : Array.isArray(overlaySubtitle) ? (
 									overlaySubtitle[0]

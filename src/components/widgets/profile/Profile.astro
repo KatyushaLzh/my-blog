@@ -6,6 +6,11 @@ import { i18n } from "../../../i18n/translation";
 import { url } from "../../../utils/url-utils";
 import Image from "../../atoms/Image/Image.astro";
 import TypewriterText from "../../atoms/typewriter-text/TypewriterText.astro";
+
+const JAPANESE_RE = /[\u3040-\u30ff\u31f0-\u31ff\uff66-\uff9f]/;
+const bioClass = JAPANESE_RE.test(profileConfig.bio || "")
+	? "japanese-field"
+	: "";
 ---
 
 <div class="card-base p-3">
@@ -43,7 +48,9 @@ import TypewriterText from "../../atoms/typewriter-text/TypewriterText.astro";
 		>
 		</div>
 
-		<div class="text-center text-neutral-400 mb-2.5 transition">
+		<div
+			class={`text-center text-neutral-400 mb-2.5 transition ${bioClass}`}
+		>
 			{
 				profileConfig.typewriter?.enable ? (
 					<TypewriterText

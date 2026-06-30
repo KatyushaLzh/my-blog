@@ -70,13 +70,13 @@ export interface SiteConfig {
 	// 添加字体配置
 	font: {
 		asciiFont: {
-			fontFamily: string;
+			fontFamily: string | string[];
 			fontWeight: string | number;
 			localFonts: string[];
 			enableCompress: boolean;
 		};
 		cjkFont: {
-			fontFamily: string;
+			fontFamily: string | string[];
 			fontWeight: string | number;
 			localFonts: string[];
 			enableCompress: boolean;

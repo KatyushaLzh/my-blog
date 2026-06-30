@@ -136,6 +136,13 @@ const bannerOffsetByPosition = {
 const bannerOffset =
 	bannerOffsetByPosition[siteConfig.banner.position || "center"];
 
+const formatFontFamilies = (fontFamily: string | string[]): string[] => {
+	const families = Array.isArray(fontFamily) ? fontFamily : [fontFamily];
+	return families.map((font) =>
+		font.includes(" ") ? `"${font}"` : font,
+	);
+};
+
 // 构建字体配置的 CSS 变量
 // ASCII 字体优先级最高（用于英文、数字等），CJK 字体作为回退
 let bodyFontFamily = "";
@@ -143,15 +150,11 @@ if (siteConfig.font) {
 	const fonts: string[] = [];
 	// 先添加 ASCII 字体（优先级最高）
 	if (siteConfig.font.asciiFont?.fontFamily) {
-		const asciiFont = siteConfig.font.asciiFont.fontFamily;
-		// 如果字体名包含空格，需要用引号包围
-		fonts.push(asciiFont.includes(" ") ? `"${asciiFont}"` : asciiFont);
+		fonts.push(...formatFontFamilies(siteConfig.font.asciiFont.fontFamily));
 	}
 	// 再添加 CJK 字体（作为回退）
 	if (siteConfig.font.cjkFont?.fontFamily) {
-		const cjkFont = siteConfig.font.cjkFont.fontFamily;
-		// 如果字体名包含空格，需要用引号包围
-		fonts.push(cjkFont.includes(" ") ? `"${cjkFont}"` : cjkFont);
+		fonts.push(...formatFontFamilies(siteConfig.font.cjkFont.fontFamily));
 	}
 	// 添加系统字体作为最终回退
 	fonts.push(
