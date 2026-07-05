@@ -116,10 +116,15 @@ const isRight = config.position === "right";
 			let currentConfigKey = "";
 			let pendingInit: number | undefined;
 			let swupHooksRegistered = false;
+			const mobileHiddenQuery = window.matchMedia("(max-width: 768px)");
+
+			function shouldHideForViewport() {
+				return currentHiddenOnMobile && mobileHiddenQuery.matches;
+			}
 
 			function applyVisibility() {
 				if (!currentEl) return;
-				if (currentHiddenOnMobile && window.innerWidth <= 1280) {
+				if (shouldHideForViewport()) {
 					currentEl.style.display = "none";
 				} else {
 					currentEl.style.display = "";
@@ -128,7 +133,7 @@ const isRight = config.position === "right";
 
 			function postInit() {
 				if (!currentEl || initSent || isTransitioning) return;
-				if (currentHiddenOnMobile && window.innerWidth <= 1280) return;
+				if (shouldHideForViewport()) return;
 				currentEl.contentWindow?.postMessage(
 					{ type: "l2d-init", config: currentConfig },
 					"*",
