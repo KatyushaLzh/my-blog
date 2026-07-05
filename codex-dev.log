@@ -77,3 +77,10 @@ https://svelte.dev/e/slot_element_deprecated
 [2m18:32:17[22m [34m[watch][39m src/components/widgets/announcement/Announcement.astro
 [2m18:32:17[22m [34m[200][39m / [2m214ms[22m
 [2m18:32:18[22m [33m[404][39m /assets/desktop-banner/1.webp [2m150ms[22m
+[2m18:33:21[22m [34m[200][39m /api/calendar-data.json [2m3ms[22m
+[2m18:33:21[22m [34m[200][39m / [2m125ms[22m
+[2m18:33:21[22m [33m[404][39m /assets/desktop-banner/1.webp [2m41ms[22m
+[2m18:33:22[22m [34m[200][39m /api/calendar-data.json [2m1ms[22m
+[2m18:33:34[22m [34m[200][39m /posts/others/ [2m324ms[22m
+[2m18:33:36[22m [34m[200][39m /posts/others/os2026/ [2m138ms[22m
+[2m18:33:39[22m [34m[200][39m /posts/others/os2026/learning/ [2m80ms[22m

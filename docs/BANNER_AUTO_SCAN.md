@@ -23,13 +23,9 @@
 ```
 public/
   assets/
-    desktop-banner/    ← 桌面端横幅图片（横版）
-      1.webp
-      2.webp
-      3.webp
-    mobile-banner/     ← 移动端横幅图片（竖版）
-      1.webp
-      2.webp
+    desktop-banner/    ← 桌面端横幅图片；当前项目移动端也复用这一组 WebP
+      03.webp
+      wallhaven-e8wj18_2560x960.webp
       ...
 ```
 
@@ -48,7 +44,7 @@ banner: {
 }
 ```
 
-不需要再维护 `src.desktop` / `src.mobile` 数组。构建时 `getBannerImages()` 会自动扫描 `public/assets/desktop-banner/` 和 `public/assets/mobile-banner/`。
+不需要再维护 `src.desktop` / `src.mobile` 数组。当前项目的 `desktopDir` 和 `mobileDir` 都指向 `public/assets/desktop-banner/`，构建时 `getBannerImages()` 会让桌面端和移动端使用同一组已压缩 WebP。
 
 ---
 
@@ -73,6 +69,8 @@ autoScan?: {
 | `desktopDir` | `"public/assets/desktop-banner"` |
 | `mobileDir` | `"public/assets/mobile-banner"` |
 | `extensions` | `[".webp", ".jpg", ".jpeg", ".png", ".avif"]` |
+
+当前项目覆盖了默认值：`mobileDir` 设置为 `"public/assets/desktop-banner"`，`extensions` 设置为 `[".webp"]`，避免生产页面继续引用未压缩 PNG。
 
 ### 自定义示例
 
@@ -99,7 +97,7 @@ autoScan: {
 2. **存在性检查**：目录不存在时输出 `[autoScan]` 警告，返回空数组
 3. **扩展名过滤**：只保留匹配 `extensions` 中任一扩展名的文件
 4. **自然排序**：使用 `localeCompare({ numeric: true })` 确保 `2.webp` < `10.webp`
-5. **URL 转换**：文件系统路径 → public URL（`"public/assets/desktop-banner/1.webp"` → `"/assets/desktop-banner/1.webp"`）
+5. **URL 转换**：文件系统路径 → public URL（`"public/assets/desktop-banner/03.webp"` → `"/assets/desktop-banner/03.webp"`）
 
 排序后的路径数组直接传递给 `Banner.astro`，逻辑完全复用现有轮播管道。
 
@@ -147,7 +145,7 @@ Banner 使用 `object-fit: cover` + `sizes="100vw"`（`src/components/layout/Ban
 | 端 | 推荐宽度 | 推荐比例 | 格式 | 建议文件大小 |
 |---|---|---|---|---|
 | **Desktop** | ≥ 2560px（2x Retina） | 16:9 或更宽 | `.webp` | ≤ 500KB |
-| **Mobile** | ≥ 1536px（2x Retina） | 9:16 竖屏 | `.webp` | ≤ 300KB |
+| **Mobile** | 当前复用 Desktop 图 | 由 `object-fit: cover` 裁切 | `.webp` | ≤ 500KB |
 
 命名建议使用自然数字编号（`1.webp`, `2.webp`, …, `10.webp`），排序预期正确。
 

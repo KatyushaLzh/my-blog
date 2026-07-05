@@ -4,7 +4,7 @@ import Pio from "@components/features/pio/Pio.astro";
 import ConfigCarrier from "@components/misc/ConfigCarrier.astro";
 import MusicPlayer from "@components/widgets/music-player/MusicPlayer.svelte";
 import Analytics from "@vercel/analytics/astro";
-import { pioConfig, profileConfig, siteConfig } from "@/config";
+import { pioConfig, siteConfig } from "@/config";
 
 const BANNER_HEIGHT = 35;
 const BANNER_HEIGHT_EXTEND = 30;
@@ -236,13 +236,6 @@ if (siteConfig.font) {
 				"page-width": `${PAGE_WIDTH}rem`,
 			}}
 		></style>
-
-		<link
-			rel="alternate"
-			type="application/rss+xml"
-			title={profileConfig.name}
-			href={`${Astro.site}rss.xml`}
-		/>
 	</head>
 	<body
 		class="min-h-screen"

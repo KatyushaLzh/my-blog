@@ -6,7 +6,10 @@ const SITE_LANG = "zh_CN"; // 语言代码，例如：'en', 'zh_CN', 'ja' 等。
 export const siteConfig: SiteConfig = {
 	title: "Katyusha's blog",
 	subtitle: "记录技术与成长",
+	description: "Katyusha 的个人技术博客，记录软件工程、算法、系统编程与 AI Infra 学习成长。",
 	siteURL: "https://katyusha-blog.com/", // 请替换为你的站点URL，以斜杠结尾
+	ogImage: "/assets/og/default.webp",
+	keywords: ["Katyusha", "软件工程", "算法", "系统编程", "AI Infra", "Astro"],
 	siteStartDate: "2026-06-23", // 站点开始运行日期，用于站点统计组件计算运行天数
 
 	lang: SITE_LANG,
@@ -144,8 +147,8 @@ export const siteConfig: SiteConfig = {
 		autoScan: {
 			enable: true,
 			desktopDir: "public/assets/desktop-banner",    // 桌面端图片目录
-			mobileDir: "public/assets/mobile-banner",      // 移动端图片目录
-			extensions: [".webp", ".jpg", ".jpeg", ".png", ".avif"], // 扫描的图片扩展名
+			mobileDir: "public/assets/desktop-banner",     // 移动端复用桌面端 WebP 横幅
+			extensions: [".webp"], // 仅扫描已压缩的 WebP，避免生产首页继续引用大体积 PNG
 		},
 
 		homeText: {

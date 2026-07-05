@@ -200,7 +200,7 @@ export function calculateGridLayout(
  * 扫描指定目录下的图片文件，返回排序后的 public URL 路径数组
  *
  * 约定：目录路径相对于项目根目录（cwd），如 "public/assets/desktop-banner"
- * 返回：URL 路径数组，如 ["/assets/desktop-banner/1.webp", ...]
+ * 返回：URL 路径数组，如 ["/assets/desktop-banner/03.webp", ...]
  *
  * 排序策略：数字优先自然排序（如 1.webp < 2.webp < 10.webp）
  * 容错：目录不存在或空目录时返回空数组，不抛异常
@@ -236,7 +236,7 @@ function scanBannerDirectory(
 		);
 
 	// 将文件系统路径转换为 public URL 路径
-	// "public/assets/desktop-banner/1.webp" → "/assets/desktop-banner/1.webp"
+	// "public/assets/desktop-banner/03.webp" → "/assets/desktop-banner/03.webp"
 	const prefix = dirRelative.replace(/^public[/\\]?/, "/");
 	return files.map((name) => `${prefix}/${name}`);
 }

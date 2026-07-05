@@ -10,7 +10,9 @@ import type {
 export interface SiteConfig {
 	title: string;
 	subtitle: string;
+	description?: string; // 站点描述，用于首页 SEO 与分享卡片
 	siteURL: string; // 站点URL，以斜杠结尾，例如：https://mizuki.mysqil.com/
+	ogImage?: string; // 默认 Open Graph 分享图，支持 public 路径或完整 URL
 	keywords?: string[]; // 站点关键词，用于生成 <meta name="keywords">
 	siteStartDate?: string; // 站点开始日期，格式：YYYY-MM-DD，用于计算运行天数
 
