@@ -1,0 +1,58 @@
+{
+	"Version": 3,
+	"FileReferences": {
+		"Moc": "Kimochi-shiki_Kasane_Teto.moc3",
+		"Textures": [
+			"Kimochi-shiki_Kasane_Teto.8192/texture_00.png"
+		],
+		"Physics": "Kimochi-shiki_Kasane_Teto.physics3.json",
+		"DisplayInfo": "Kimochi-shiki_Kasane_Teto.cdi3.json",
+		"Expressions": [
+			{
+				"Name": "CatEar",
+				"File": "CatEar.exp3.json"
+			},
+			{
+				"Name": "eye_1",
+				"File": "eye_1.exp3.json"
+			},
+			{
+				"Name": "eye_2",
+				"File": "eye_2.exp3.json"
+			},
+			{
+				"Name": "guruguru",
+				"File": "guruguru.exp3.json"
+			},
+			{
+				"Name": "star",
+				"File": "star.exp3.json"
+			},
+			{
+				"Name": "sweat",
+				"File": "sweat.exp3.json"
+			},
+			{
+				"Name": "Tears",
+				"File": "Tears.exp3.json"
+			},
+			{
+				"Name": "heart",
+				"File": "heart.exp3.json"
+			}
+		]
+	},
+	"Groups": [
+		{
+			"Target": "Parameter",
+			"Name": "EyeBlink",
+			"Ids": []
+		},
+		{
+			"Target": "Parameter",
+			"Name": "LipSync",
+			"Ids": []
+		}
+	],
+	"HitAreas": []
+}
