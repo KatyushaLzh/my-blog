@@ -147,7 +147,7 @@ export const siteConfig: SiteConfig = {
 		autoScan: {
 			enable: true,
 			desktopDir: "public/assets/desktop-banner",    // 桌面端图片目录
-			mobileDir: "public/assets/desktop-banner",     // 移动端复用桌面端 WebP 横幅
+			mobileDir: "public/assets/mobile-banner-generated", // 移动端使用由桌面图派生的竖屏 WebP
 			extensions: [".webp"], // 仅扫描已压缩的 WebP，避免生产首页继续引用大体积 PNG
 		},
 

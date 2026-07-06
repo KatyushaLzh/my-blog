@@ -23,9 +23,13 @@
 ```
 public/
   assets/
-    desktop-banner/    ← 桌面端横幅图片；当前项目移动端也复用这一组 WebP
+    desktop-banner/    ← 桌面端横幅图片
       03.webp
       wallhaven-e8wj18_2560x960.webp
+      ...
+    mobile-banner-generated/ ← 由桌面图派生的移动端竖屏 WebP
+      03_mobile.webp
+      wallhaven-e8wj18_2560x960_mobile.webp
       ...
 ```
 
@@ -44,7 +48,7 @@ banner: {
 }
 ```
 
-不需要再维护 `src.desktop` / `src.mobile` 数组。当前项目的 `desktopDir` 和 `mobileDir` 都指向 `public/assets/desktop-banner/`，构建时 `getBannerImages()` 会让桌面端和移动端使用同一组已压缩 WebP。
+不需要再维护 `src.desktop` / `src.mobile` 数组。当前项目的 `desktopDir` 指向 `public/assets/desktop-banner/`，`mobileDir` 指向 `public/assets/mobile-banner-generated/`；移动端图片由桌面图等比保留内容后合成为 `1080x1200` WebP。
 
 ---
 
@@ -70,7 +74,7 @@ autoScan?: {
 | `mobileDir` | `"public/assets/mobile-banner"` |
 | `extensions` | `[".webp", ".jpg", ".jpeg", ".png", ".avif"]` |
 
-当前项目覆盖了默认值：`mobileDir` 设置为 `"public/assets/desktop-banner"`，`extensions` 设置为 `[".webp"]`，避免生产页面继续引用未压缩 PNG。
+当前项目覆盖了默认值：`mobileDir` 设置为 `"public/assets/mobile-banner-generated"`，`extensions` 设置为 `[".webp"]`，避免生产页面继续引用未压缩 PNG 或横屏桌面图。
 
 ### 自定义示例
 
