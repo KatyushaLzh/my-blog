@@ -27,7 +27,7 @@ public/
       03.webp
       wallhaven-e8wj18_2560x960.webp
       ...
-    mobile-banner-generated/ ← 由桌面图派生的移动端竖屏 WebP
+    mobile-banner-generated/ ← 由桌面图等比 cover 派生的移动端 WebP
       03_mobile.webp
       wallhaven-e8wj18_2560x960_mobile.webp
       ...
@@ -48,7 +48,7 @@ banner: {
 }
 ```
 
-不需要再维护 `src.desktop` / `src.mobile` 数组。当前项目的 `desktopDir` 指向 `public/assets/desktop-banner/`，`mobileDir` 指向 `public/assets/mobile-banner-generated/`；移动端图片由桌面图等比保留内容后合成为 `1080x1200` WebP。
+不需要再维护 `src.desktop` / `src.mobile` 数组。当前项目的 `desktopDir` 指向 `public/assets/desktop-banner/`，`mobileDir` 指向 `public/assets/mobile-banner-generated/`；移动端图片由桌面图等比缩放并居中裁切为 `1080x1200` WebP，用于填满移动端横幅。
 
 ---
 
