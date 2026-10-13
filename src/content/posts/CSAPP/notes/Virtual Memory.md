@@ -18,13 +18,13 @@ sourceLink: ""
 主存(DRAM实现)可以看做一个由$M$个字节组成的数组(不一定连续，中间可能有内存映射I/O区域)，通过数组索引访问内存的方式称为**物理寻址**(故主存也可称物理内存)，一般用于嵌入式
 
 
-![image](./csapp-virtual-memory-virtual-memory-image-001.jpg)
+![image](./physical-address-memory-system.jpg)
 
 
 CPU通过生成的虚拟地址，在处理器芯片上通过内存管理单元**MMU**进行地址翻译，得到对应的物理地址，再根据此对主存进行访问，称为**虚拟寻址**
 
 
-![image](./csapp-virtual-memory-virtual-memory-image-002.jpg)
+![image](./mmu-virtual-address-translation.jpg)
 
 
 对于一个n位线性地址空间，可以访问的地址为$0$到$2^n-1$
@@ -44,7 +44,7 @@ $n$位地址理论上最多表示$2^n$个不同地址；实际CPU支持的虚拟
 3. 已缓存的：该页已经和磁盘上的某部分相关联，且这些磁盘信息正在主存中，这一页已经对应了一个物理页
 
 
-![image](./csapp-virtual-memory-virtual-memory-image-003.jpg)
+![image](./dram-virtual-page-cache.jpg)
 
 
 类比SRAM实现的高速缓存，主存也会发生替换，由于主存不命中的惩罚大的多(从磁盘中读取数据特别慢)，主存DRAM是全相连的，使用了更精细的替换算法，同时采用写回而不是直写
@@ -62,13 +62,13 @@ $n$位地址理论上最多表示$2^n$个不同地址；实际CPU支持的虚拟
 当$valid$为0时，若$address$不为$NULL$，则表示对应的虚拟页在磁盘上的起始地址为$address$，否则表示该页还未与磁盘相关联
 
 
-![image](./csapp-virtual-memory-virtual-memory-image-004.jpg)
+![image](./page-table-resident-swapped-pages.jpg)
 
 
 同时，我们可以通过对PTE上增加一些额外的许可位来控制一个进程的访问权限，进而避免了破坏其它进程的地址空间，如添加$SUP$位表示是否只能在内核模式下访问，$READ$，$WRITE$位表示能否进行读写
 
 
-![image](./csapp-virtual-memory-virtual-memory-image-005.jpg)
+![image](./page-level-memory-protection.jpg)
 
 
 当一条指令违反了这些权限时，就会产生异常控制流，shell将其报告为"段错误"
@@ -80,17 +80,17 @@ $n$位地址理论上最多表示$2^n$个不同地址；实际CPU支持的虚拟
 当访问的虚拟页不在物理页中时，对应的PTE的$valid$位为0，此时就会产生一个缺页异常，调用内核中的缺页异常处理程序。内核会选择一个牺牲页，若它被修改过则写回磁盘，然后把需要的虚拟页调入某个物理页，并更新相关PTE。此后异常处理程序结束，重新执行触发缺页的指令，若异常处理成功就会产生页命中
 
 
-![image](./csapp-virtual-memory-virtual-memory-image-006.jpg)
+![image](./page-fault-before-eviction.jpg)
 
 
 
-![image](./csapp-virtual-memory-virtual-memory-image-007.jpg)
+![image](./page-fault-after-page-replacement.jpg)
 
 
 ##### 页分配
 
 
-![image](./csapp-virtual-memory-virtual-memory-image-008.jpg)
+![image](./virtual-page-allocation.jpg)
 
 
 #### 虚拟内存的作用
@@ -105,7 +105,7 @@ $n$位地址理论上最多表示$2^n$个不同地址；实际CPU支持的虚拟
 传入一个虚拟地址后，MMU采用以下的机制进行地址翻译得到物理地址：
 
 
-![image](./csapp-virtual-memory-virtual-memory-image-009.png)
+![image](./page-table-address-translation.png)
 
 
 虚拟地址由两部分组成，$p$位的虚拟地址偏移量，和剩下$n-p$位的虚拟页号
@@ -115,7 +115,7 @@ $n$位地址理论上最多表示$2^n$个不同地址；实际CPU支持的虚拟
 硬件整体执行的流程如下
 
 
-![image](./csapp-virtual-memory-virtual-memory-image-010.png)
+![image](./page-hit-and-fault-steps.png)
 
 
 #### TLB加速地址翻译
@@ -126,11 +126,11 @@ $n$位地址理论上最多表示$2^n$个不同地址；实际CPU支持的虚拟
 类比高速缓存，对于一个有$T=2^t$个组的TLB，组索引来自虚拟页号VPN的低$t$位，页内偏移VPO不参与TLB查找；VPN剩下的高位作为标记位进行校验
 
 
-![image](./csapp-virtual-memory-virtual-memory-image-011.png)
+![image](./tlb-address-tag-index-fields.png)
 
 
 
-![image](./csapp-virtual-memory-virtual-memory-image-012.png)
+![image](./tlb-hit-and-miss-steps.png)
 
 
 同时，各级高速缓存也可能保存PTE的缓存
@@ -139,13 +139,13 @@ $n$位地址理论上最多表示$2^n$个不同地址；实际CPU支持的虚拟
 现代计算机实际上采用的是多级页表的结构，即上一级页表中存储的是下一级页表的地址，最后一级页表存储的才是虚拟页的信息。这样构成的是一种树形结构
 
 
-![image](./csapp-virtual-memory-virtual-memory-image-013.png)
+![image](./two-level-page-table-layout.png)
 
 
 只有当一个页表的下一级至少有一个页是分配了的时候，该页表才非空，会分配空间，这极大节约了空间。TLB会缓存最终的地址翻译结果，因此TLB命中时无需逐级访问页表；但TLB不命中时，多级页表仍可能带来多次内存访问
 
 
-![image](./csapp-virtual-memory-virtual-memory-image-014.png)
+![image](./multilevel-page-table-translation.png)
 
 
 ### Intel Core i7/Linux 内存系统
@@ -167,7 +167,7 @@ $n$位地址理论上最多表示$2^n$个不同地址；实际CPU支持的虚拟
 共享对象示意如下
 
 
-![image](./csapp-virtual-memory-virtual-memory-image-015.png)
+![image](./shared-object-memory-mapping.png)
 
 
 具体实现上，采用了修改PTE，使得不同的虚拟页面指向同一个物理页面，并且这些对应的PTE都有读写权
@@ -175,7 +175,7 @@ $n$位地址理论上最多表示$2^n$个不同地址；实际CPU支持的虚拟
 私有对象示意如下
 
 
-![image](./csapp-virtual-memory-virtual-memory-image-016.png)
+![image](./private-copy-on-write-mapping.png)
 
 
 具体而言，私有对象采用了一种“写时复制”(copy-on-write，COW)的机制。在最初不同进程虚拟地址的PTE都指向物理地址中的对象，这些进程对应此对象的PTE上都只有读权限，当一个进程尝试进行写的时候，由于没有写的权力，会触发一个故障处理程序，该故障处理程序将私有对象被访问的物理页拷贝一份在为其新分配的物理空间上，并将该页对应的PTE指向此处，设置读写权。然后再重新执行这个写操作，就能正常执行了。写时复制通过推迟复制操作直到对象被修改，极大节约了物理内存。
@@ -187,7 +187,7 @@ $n$位地址理论上最多表示$2^n$个不同地址；实际CPU支持的虚拟
 当执行execve函数时，先解除原程序在对虚拟空间的映射，使用内存映射将新程序的信息载入虚拟空间，然后将PC跳转到新程序指令起始位置
 
 
-![image](./csapp-virtual-memory-virtual-memory-image-017.png)
+![image](./loader-process-memory-regions.png)
 
 
 #### 用户级内存映射mmap
@@ -195,19 +195,19 @@ $n$位地址理论上最多表示$2^n$个不同地址；实际CPU支持的虚拟
 mmap函数原型如下，实现了用户级的内存映射
 
 
-![image](./csapp-virtual-memory-virtual-memory-image-018.png)
+![image](./mmap-api.png)
 
 
 函数中部分参数的意义如下
 
 
-![image](./csapp-virtual-memory-virtual-memory-image-019.png)
+![image](./mmap-file-offset-mapping.png)
 
 
 对于剩余的参数prot，该参数指定了虚拟内存的权限访问位，可以为以下几种
 
 
-![image](./csapp-virtual-memory-virtual-memory-image-020.png)
+![image](./mmap-protection-flags.png)
 
 
 注意，可以将这个常量采用或运算来给予多个权限
@@ -224,7 +224,7 @@ mmap函数原型如下，实现了用户级的内存映射
 #### 动态内存分配的用户级函数
 
 
-![image](./csapp-virtual-memory-virtual-memory-image-021.png)
+![image](./malloc-api.png)
 
 
 `malloc` 返回一个至少为size字节的内存块的起始地址的void类型指针，由于需要内存对齐，这段内存字节大小可能大于size
@@ -232,13 +232,13 @@ mmap函数原型如下，实现了用户级的内存映射
 注意：`malloc` 不会初始化这段内存的值，要初始化为0可以使用`calloc`
 
 
-![image](./csapp-virtual-memory-virtual-memory-image-022.png)
+![image](./sbrk-api.png)
 
 
 当`incr`为0时，可以得到当前的`brk`指针
 
 
-![image](./csapp-virtual-memory-virtual-memory-image-023.png)
+![image](./free-api.png)
 
 
 注意：`free`的参数必须为`NULL`，或为尚未释放过的`malloc`类函数返回值
@@ -262,7 +262,7 @@ mmap函数原型如下，实现了用户级的内存映射
 块的结构如下
 
 
-![image](./csapp-virtual-memory-virtual-memory-image-024.png)
+![image](./heap-block-boundary-tags.png)
 
 
 块开头和结尾的头部，脚部是完全相同的，大小都为1个字32位。前29位表示这个块的字节大小(头部与脚部地址的差)，由于内存按8字节对齐，所以大小的后三位一定全为0，所以不需要显式地表示出来，可以用来存储其它的信息，比如这个块是空闲的还是已经被分配的。中间分别为这个块的有效载荷和填充。
@@ -287,7 +287,7 @@ mmap函数原型如下，实现了用户级的内存映射
 #### 显式空闲链表
 
 
-![image](./csapp-virtual-memory-virtual-memory-image-025.png)
+![image](./explicit-free-list-block-layout.png)
 
 
 显式空闲链表是对隐式空闲链表的一种优化，空闲块由于为被分配，有效载荷部分为空，可以额外存储信息。于是显式存储了当前空闲块的前一个和后一个空闲块的指针，使得每次寻找空闲块时无需遍历已分配块，降低了时间开销
@@ -305,6 +305,6 @@ mmap函数原型如下，实现了用户级的内存映射
 具体而言，当一个内存空间被寄存器，全局变量，用户栈中的变量指向时，这个内存一定需要保持有效。所以我们将后面这些变量看做根节点，已分配块看做是堆节点，当发生a对b的引用时，就连一条a到b的有向边，进而构成了一张有向可达图。所有从根节点出发不可达的堆节点显然就是无用的内存，需要被回收。当malloc找不到空闲块时，就会调用垃圾收集器，从所有根节点出发遍历所有可达的节点并标记，再依次遍历堆，释放所有未被标记的堆节点。然后再次尝试malloc，若还是没有合适的空闲块再尝试向内核获取额外的堆内存
 
 
-![image](./csapp-virtual-memory-virtual-memory-image-026.png)
+![image](./garbage-collection-reachability-graph.png)
 
 

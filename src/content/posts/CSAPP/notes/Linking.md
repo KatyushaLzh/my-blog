@@ -18,7 +18,7 @@ sourceLink: ""
 
 
 
-![image](./csapp-linking-linking-image-001.jpg)
+![image](./static-linking-main-sum-pipeline.jpg)
 
 
 
@@ -42,7 +42,7 @@ x86-64 linux使用可执行可链接格式(Executable and Linkable Format，ELF)
 #### 可重定位目标文件的格式
 
 
-![image](./csapp-linking-linking-image-002.jpg)
+![image](./elf-relocatable-object-sections.jpg)
 
 
 - ELF头：描述生成该ELF文件的系统的信息，以及该ELF文件的一些基本信息
@@ -70,7 +70,7 @@ symtab包含以下三种符号：
 symtab中包含多个符号，每个符号用一个如下结构的条目表示
 
 
-![image](./csapp-linking-linking-image-003.jpg)
+![image](./elf64-symbol-structure.jpg)
 
 
 - name：该条目符号在.strtab中的偏移量，从.strtab中这个位置开始一直取字符直到遇到结束符
@@ -89,7 +89,7 @@ symtab中包含多个符号，每个符号用一个如下结构的条目表示
 我们可以使用`GNU READELF`程序查看目标文件内容，一个示例如下
 
 
-![image](./csapp-linking-linking-image-004.jpg)
+![image](./readelf-main-symbol-table.jpg)
 
 
 #### 符号解析
@@ -107,7 +107,7 @@ symtab中包含多个符号，每个符号用一个如下结构的条目表示
 以下是一个由该规则可能导致的错误
 
 
-![image](./csapp-linking-linking-image-005.jpg)
+![image](./incompatible-global-symbol-types.jpg)
 
 
 两个模块中，第一个x是强符号，而第二个是COMMON，链接器将它们合并，并按较大的对象大小分配存储，那么对 `x` 的写入可能覆盖相邻数据，例如修改到 `y`
@@ -126,7 +126,7 @@ symtab中包含多个符号，每个符号用一个如下结构的条目表示
 `linux> gcc -static -o prog main.o ./libvector.a`
 
 
-![image](./csapp-linking-linking-image-006.jpg)
+![image](./static-archive-libvector-linking.jpg)
 
 
 ##### 链接器静态链接的行为
@@ -146,19 +146,19 @@ symtab中包含多个符号，每个符号用一个如下结构的条目表示
 重定位条目存在于`.rel.data`和`.rel.text`中，作用是告知链接器如何对于一个外部符号进行修改，其结构如下
 
 
-![image](./csapp-linking-linking-image-007.jpg)
+![image](./executable-object-sections.jpg)
 
 
 重定位的算法描述如下
 
 
-![image](./csapp-linking-linking-image-008.jpg)
+![image](./executable-runtime-memory-layout.jpg)
 
 
 为了便于理解，我们直接举下面的例子
 
 
-![image](./csapp-linking-linking-image-009.jpg)
+![image](./shared-library-linking-pipeline.jpg)
 
 
 注意：linux x86-64使用小端序！！！
@@ -172,7 +172,7 @@ symtab中包含多个符号，每个符号用一个如下结构的条目表示
 ELF可执行文件被设计为易于加载到内存，格式如下：
 
 
-![image](./csapp-linking-linking-image-010.jpg)
+![image](./dynamic-loader-shared-libraries.jpg)
 
 
 - ELF头部：描述文件的总体格式，包括程序入口点（entry point）
@@ -191,7 +191,7 @@ ELF可执行文件被设计为易于加载到内存，格式如下：
 运行时的内存分配情况如下：
 
 
-![image](./csapp-linking-linking-image-011.jpg)
+![image](./dlopen-dlsym-dlclose-api.jpg)
 
 
 ### 动态链接
@@ -211,7 +211,7 @@ ELF可执行文件被设计为易于加载到内存，格式如下：
 在执行这个部分链接的可执行文件前或运行中，动态链接器动态地将共享库中符号具体定义链接进来，内存中即为完全链接的可执行文件
 
 
-![image](./csapp-linking-linking-image-012.jpg)
+![image](./dlopen-vector-add-example.jpg)
 
 
 linux系统提供了相关的程序接口`dlopen()、dlsym()、dlclose()、dlerror()`，可以在程序运行中进行动态链接

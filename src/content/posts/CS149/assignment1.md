@@ -28,7 +28,7 @@ https://github.com/stanford-cs149/asst1
 可以`sudo apt install feh`后，使用`feh <image-path> `查看生成的图像
 
 
-![image](./cs149-assignment1-image-001.jpg)
+![image](./mandelbrot-fractal-view.jpg)
 
 
 给出的`mandelbrotSerial.cpp`实现了单线程的计算，我们需要在`mandelbrotThread.cpp`中修改`workerThreadStart`函数，使用`std::thread`加速这个过程
@@ -57,7 +57,7 @@ void workerThreadStart(WorkerArgs * const args) {
 `make`后使用`./mandelbort -t <线程数>`运行得到线程数与加速比的关系如下 第一次用matplotlib画图显示中文字符调了我半天:(
 
 
-![image](./cs149-assignment1-image-002.png)
+![image](./mandelbrot-static-partition-speedup.png)
 
 
 有意思的是，在`view1`中，使用3个线程加速比反而降低了，观察`view1`图像，中间部分计算量明显大于两边的计算量，因而负载不均匀导致加速比降低
@@ -91,7 +91,7 @@ void workerThreadStart(WorkerArgs * const args) {
 得到的结果如下：
 
 
-![image](./cs149-assignment1-image-003.png)
+![image](./mandelbrot-interleaved-partition-speedup.png)
 
 
 对比发现生成两张图片的加速比都高于简单的空间划分，加速比的波动是由于块的大小这个参数造成的
@@ -329,7 +329,7 @@ Wrote image file mandelbrot-task-ispc.ppm
 已经完成了牛顿迭代法求解平方根倒数的`ispc`代码，其中需要求解的数据在$(0,3)$中，并且迭代次数与求解数据存在以下关系
 
 
-![image](./cs149-assignment1-image-004.jpg)
+![image](./sqrt-convergence-iterations-by-input.jpg)
 
 
 #### 最好/最坏加速比的构造

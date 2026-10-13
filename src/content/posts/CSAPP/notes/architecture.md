@@ -30,7 +30,7 @@ RISC指令集设计简约，便于流水线优化；CISC指令集表达能力强
 $Y86-64$中，程序可见状态包括15个寄存器，条件码，PC，虚拟内存，以及状态码
 
 
-![image](./csapp-architecture-architecture-image-001.png)
+![image](./y86-64-instruction-encodings.png)
 
 
 #### 可用指令
@@ -44,15 +44,15 @@ $Y86-64$只包含8字节整数操作，指令格式与$x86-64$ AT&T格式类似
 #### 指令的编码
 
 
-![image](./csapp-architecture-architecture-image-002.png)
+![image](./y86-64-register-identifiers.png)
 
 
 
-![image](./csapp-architecture-architecture-image-003.png)
+![image](./hcl-boolean-expression-examples.png)
 
 
 
-![image](./csapp-architecture-architecture-image-004.png)
+![image](./bitwise-and-logic-circuit.png)
 
 
 我们以指令 `rmmov %rsp,0x123456789abcd(%rdx)`为例，`rmmov`的指令编码为40，`%rsp %rdx`的编码为42，最后的偏移量字节序列为$000123456789abcd$，注意是小端法，按照字节间反序得到偏移量编码为$cdab896745230100$,进而得到整条指令编码为$4042cdab896745230100$
@@ -60,7 +60,7 @@ $Y86-64$只包含8字节整数操作，指令格式与$x86-64$ AT&T格式类似
 #### Y86-64指令异常
 
 
-![image](./csapp-architecture-architecture-image-005.png)
+![image](./hcl-word-equality-circuit.png)
 
 
 #### Y86-64程序
@@ -70,7 +70,7 @@ $Y86-64$只包含8字节整数操作，指令格式与$x86-64$ AT&T格式类似
 实例：
 
 
-![image](./csapp-architecture-architecture-image-006.png)
+![image](./hcl-word-equality-expression.png)
 
 
 补充：在x86-64和Y86-64语义下，`pushq %rsp`压入的是执行压栈前的栈指针旧值；`popq %rsp`会把旧栈顶处弹出的值写入`%rsp`
@@ -94,20 +94,20 @@ MUX函数
 由多个位级的组合门得到字级的抽象
 多路MUX的HCL语法
 
-![image](./csapp-architecture-architecture-image-007.png)
+![image](./hcl-multiplexer-case-expression.png)
 
 
 注意：不要求$select_i$之间互斥，即返回的结果是第一个满足$select_i$后面的值
 
 ALU
 
-![image](./csapp-architecture-architecture-image-008.png)
+![image](./alu-arithmetic-logic-operations.png)
 
 
 集合关系
 
 
-![image](./csapp-architecture-architecture-image-009.png)
+![image](./hcl-set-membership-control-signals.png)
 
 
 #### 时序逻辑
@@ -121,13 +121,13 @@ ALU
 #### 存储器的读写
 
 
-![image](./csapp-architecture-architecture-image-010.png)
+![image](./register-file-read-write-ports.png)
 
 
 可以通过修改$srcA$或$srcB$为需要读取的寄存器编号，寄存器文件会组合逻辑地从$valA$,$valB$输出相应寄存器的值；写入则在时钟上升沿根据$dest$完成
 
 
-![image](./csapp-architecture-architecture-image-011.png)
+![image](./data-memory-read-write-interface.png)
 
 
 内存的读写也类似：读操作根据地址产生输出值，写操作则在受时钟控制的写入时刻把输入数据写入相应地址
@@ -146,16 +146,16 @@ ALU
 #### Y86-64指令执行的阶段
 
 
-![image](./csapp-architecture-architecture-image-012.png)
+![image](./seq-arithmetic-register-move-stages.png)
 
 
-![image](./csapp-architecture-architecture-image-013.png)
+![image](./seq-memory-load-store-stages.png)
 
 
-![image](./csapp-architecture-architecture-image-014.png)
+![image](./seq-push-pop-stages.png)
 
 
-![image](./csapp-architecture-architecture-image-015.png)
+![image](./seq-jump-call-return-stages.png)
 
 
 ### SEQ 顺序处理器
@@ -163,7 +163,7 @@ ALU
 
 #### SEQ的硬件结构
 
-![image](./csapp-architecture-architecture-image-016.png)
+![image](./seq-processor-hardware-datapath.png)
 
 
 注意：处理器遵循“用不回读”原则，在同一个时钟周期内即不会修改一个存储器后再读取这个存储器的值
@@ -172,13 +172,13 @@ ALU
 
 以下是控制逻辑中必须显示使用的常量在HCL中的定义
 
-![image](./csapp-architecture-architecture-image-017.png)
+![image](./hcl-instruction-status-constants.png)
 
 
 ##### 取指阶段
 
 
-![image](./csapp-architecture-architecture-image-018.png)
+![image](./seq-instruction-fetch-stage.png)
 
 
 通过指令第一个字节中包含的指令功能，判断得到是否需要读入寄存器和常数($Need\_regids$和$Need\_valC$)
@@ -189,14 +189,14 @@ ALU
 
 例：
 
-![image](./csapp-architecture-architecture-image-019.png)
+![image](./hcl-register-byte-requirement.png)
 
 
 
 ##### 访问寄存器
 
 
-![image](./csapp-architecture-architecture-image-020.png)
+![image](./seq-decode-writeback-stages.png)
 
 
 译码，写回两个阶段本质都是对寄存器的访问
@@ -206,13 +206,13 @@ ALU
 
 例：
 
-![image](./csapp-architecture-architecture-image-021.png)
+![image](./hcl-source-register-selection.png)
 
 
 ##### 执行阶段
 
 
-![image](./csapp-architecture-architecture-image-022.png)
+![image](./seq-execute-stage-alu-control.png)
 
 
 
@@ -221,7 +221,7 @@ ALU接收三个参数$aluB$,$aluA$,$alufun$，得到结果$valE$并设置条件�
 
 例：
 
-![image](./csapp-architecture-architecture-image-023.png)
+![image](./hcl-alu-input-a-selection.png)
 
 
 条件码会和指令的功能一同传入黑箱$cond$中，黑箱传出信号决定$Cnd$用于条件跳转和条件传送
@@ -229,20 +229,20 @@ ALU接收三个参数$aluB$,$aluA$,$alufun$，得到结果$valE$并设置条件�
 ##### 访问内存
 
 
-![image](./csapp-architecture-architecture-image-024.png)
+![image](./seq-memory-access-stage.png)
 
 
 通过$Mem.read$和$Mem.write$控制是写还是读，$Mem.addr$控制读写的地址，$Mem.data$控制写入值，$valM$得到读取值
 
 例：
 
-![image](./csapp-architecture-architecture-image-025.png)
+![image](./hcl-memory-address-selection.png)
 
 
 ##### 更新PC状态
 
 
-![image](./csapp-architecture-architecture-image-026.png)
+![image](./seq-program-counter-update.png)
 
 PC可能的新值为顺序下一条指令的地址，使用函数或结束函数跳转到的地址，条件跳转的地址
 从这几个地址中选择即可
@@ -255,7 +255,7 @@ PC可能的新值为顺序下一条指令的地址，使用函数或结束函数
 #### 流水线基本原理
 
 
-![image](./csapp-architecture-architecture-image-027.png)
+![image](./nonpipelined-hardware-latency-throughput.png)
 
 
 注：$1ps=10^{-12}s$
@@ -266,7 +266,7 @@ PC可能的新值为顺序下一条指令的地址，使用函数或结束函数
 流水化后：
 
 
-![image](./csapp-architecture-architecture-image-028.png)
+![image](./three-stage-pipeline-latency-throughput.png)
 
 
 将组合逻辑拆解为几个子阶段，并引入寄存器保存每个子阶段的结果
@@ -291,7 +291,7 @@ PC计算阶段并入取指阶段中，影响PC更新的寄存器来自前一个�
 ##### 插入流水线寄存器
 
 
-![image](./csapp-architecture-architecture-image-029.png)
+![image](./pipe-processor-hardware-datapath.png)
 
 
 通过插入流水线寄存器保存流水线各阶段之间的信息，使得其得以自底向上流动
@@ -315,7 +315,7 @@ PC计算阶段并入取指阶段中，影响PC更新的寄存器来自前一个�
 当下一步继续进行会产生数据冒险时，处理器会动态加入气泡(作用类似`nop`指令)，来将后续受影响的指令停止在取指阶段，直到最深的一条指令通过写回阶段再继续进行
 
 
-![image](./csapp-architecture-architecture-image-030.png)
+![image](./pipeline-data-hazard-stall-bubbles.png)
 
 
 ##### 转发
@@ -323,14 +323,14 @@ PC计算阶段并入取指阶段中，影响PC更新的寄存器来自前一个�
 在基本的硬件结构中增加一些额外的数据连接和控制逻辑，使得更深的指令得以在数据已经计算完毕但还未来得及写入的情况下，直接将该数据写入受影响的指令的流水线寄存器中，避免了指令的停止
 
 
-![image](./csapp-architecture-architecture-image-031.png)
+![image](./pipeline-writeback-decode-forwarding.png)
 
 
 ##### 转发与暂停的结合
 当更深指令尚未得到与后面受影响的指令相关的数据时(如读取内存的值写入寄存器，直到M阶段才能得到该数据)，处理器会动态产生气泡，直到得到该数据，能够进行转发
 
 
-![image](./csapp-architecture-architecture-image-032.png)
+![image](./pipeline-load-use-stall-forwarding.png)
 
 
 #### 避免控制冒险
@@ -338,7 +338,7 @@ PC计算阶段并入取指阶段中，影响PC更新的寄存器来自前一个�
 当跳转指令已经执行完F和D阶段，在E阶段发现预测出错，此时后面两条指令分别在D和F阶段，未对任何程序员可见状态进行修改，只需要在下一个时钟周期时向D和E阶段插入气泡，同时取出正确跳转地址的指令，就能从流水线中排除这两条错误指令
 
 
-![image](./csapp-architecture-architecture-image-033.png)
+![image](./pipeline-branch-misprediction-recovery.png)
 
 
 #### 异常处理

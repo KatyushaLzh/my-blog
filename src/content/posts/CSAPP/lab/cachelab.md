@@ -429,7 +429,7 @@ int main(int argc, char *argv[]){
 使用 `make && ./test-csim`得到以下结果
 
 
-![image](./csapp-memory-cachelab-image-001.png)
+![image](./cache-simulator-test-results.png)
 
 
 ### Part B
@@ -467,7 +467,7 @@ void trans(int M, int N, int A[N][M], int B[M][N])
 先在目录下使用`make && ./test-trans -M 32 -N 32`对原始函数缓存访问效率进行测试，结果如下
 
 
-![image](./csapp-memory-cachelab-image-002.png)
+![image](./transpose-32x32-baseline-results.png)
 
 
 发现该函数对于缓存访问相当不友好，我们先搞明白1183次不命中是怎么来的
@@ -475,7 +475,7 @@ void trans(int M, int N, int A[N][M], int B[M][N])
 每隔8个int就会产生一个行的偏移，先画出每个int会被放入缓存的哪一行（不会画图，图是偷的，勿喷）
 
 
-![image](./csapp-memory-cachelab-image-003.png)
+![image](./transpose-32x32-cache-set-mapping.png)
 
 
 1.对于$A$是步长为1的访问，只有在第一次访问一个没有被访问过的组的时候才会不命中，所以会有128次不命中
@@ -507,7 +507,7 @@ void trans(int M, int N, int A[N][M], int B[M][N])
 ```
 
 
-![image](./csapp-memory-cachelab-image-004.png)
+![image](./transpose-32x32-eight-by-eight-block-results.png)
 
 
 仍然需要进一步的优化，考虑对角线上的块，在转置的时候会发生对$B$进行写入时，替换掉了这一行的$A$，所以可以使用临时变量保存$A$的值，然后放入$B$中，这样减少了访问$A$这一行后面的元素所需要的一次不命中
@@ -542,7 +542,7 @@ void trans(int M, int N, int A[N][M], int B[M][N])
 结果如下，成功通过此题
 
 
-![image](./csapp-memory-cachelab-image-005.png)
+![image](./transpose-32x32-register-buffer-results.png)
 
 
 #### $64\times64$
@@ -552,7 +552,7 @@ void trans(int M, int N, int A[N][M], int B[M][N])
 再次偷图（ 这是左上角$16 \times 16$的矩阵
 
 
-![image](./csapp-memory-cachelab-image-006.png)
+![image](./transpose-64x64-cache-set-mapping.png)
 
 
 如果我们仍然采用$8\times8$分块处理的话，块内会存在严重的抖动，比如$B$内部对组0，组8，组16，组24都有两次访问，都会产生一次替换，这导致缓存命中率相当糟糕，实际测试中不命中次数为4611，与未优化的原始代码次数4723几乎没有差别
@@ -581,7 +581,7 @@ void trans(int M, int N, int A[N][M], int B[M][N])
 结果如下
 
 
-![image](./csapp-memory-cachelab-image-007.png)
+![image](./transpose-64x64-four-by-four-block-results.png)
 
 
 有所优化但是还未达到本题要求，采用$4\times4$分块的时候，虽然$B$的抖动减少了，但是对$A$中原本连续8个数的访问变成了两次对4个数的访问，这增加了$A$的抖动
@@ -591,7 +591,7 @@ void trans(int M, int N, int A[N][M], int B[M][N])
 我们考虑以下的策略
 
 
-![image](./csapp-memory-cachelab-image-008.png)
+![image](./transpose-64x64-quadrant-layout.png)
 
 
 1.先读取$A$矩阵$8\times8$分块的前4行，将黄色部分和绿色部分分别转置后，直接顺序不变拷贝到$B$中，此时未发生缓存替换，只有$A$和$B$的各4次载入
@@ -599,13 +599,13 @@ void trans(int M, int N, int A[N][M], int B[M][N])
 
 
 
-![image](./csapp-memory-cachelab-image-009.png)
+![image](./transpose-64x64-top-quadrants-staging.png)
 
 
 2.使用寄存器暂存未放置正确的绿色部分的一行，然后将粉色部分的一列放置到绿色部分的这一行，接着从寄存器中取值将绿色部分这一行放到正确的位置。绿色部分已经存放在了缓存中，可以直接读取，粉色第一列的时候会发生4次载入，热身缓存，正确放置绿色部分每一行的时候都会产生一次对原本存放$A$的组的替换，故一共发生8次缓存不命中
 
 
-![image](./csapp-memory-cachelab-image-010.png)
+![image](./transpose-64x64-off-diagonal-quadrant-swap.png)
 
 
 3.最后将紫色部分直接转置到正确位置即可，紫色部分每一行和放置的$B$每一列都在缓存中，全部命中
@@ -684,7 +684,7 @@ void trans(int M, int N, int A[N][M], int B[M][N])
 运行结果如下，达到了本题的要求
 
 
-![image](./csapp-memory-cachelab-image-011.png)
+![image](./transpose-64x64-optimized-results.png)
 
 
 #### $67 \times 61$
@@ -711,7 +711,7 @@ void trans(int M, int N, int A[N][M], int B[M][N])
 结果如下
 
 
-![image](./csapp-memory-cachelab-image-012.png)
+![image](./transpose-61x67-block-size-results.png)
 
 
 #### 代码

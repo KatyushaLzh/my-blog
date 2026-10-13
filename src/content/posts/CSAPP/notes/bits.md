@@ -94,7 +94,7 @@ $w$位整数与常数相乘的时候，编译器会根据上下文进行优化�
 IEEE浮点标准用$V=(-1)^s \times 2^E * M$表示浮点数
 
 
-![image](./csapp-data-bits-image-001.jpg)
+![image](./ieee754-single-precision-value-classes.jpg)
 
 
 设$exp=\sum\limits_{i=0}^{k-1}2^ie_i$,$bias=2^{k-1}-1$(无符号整数)

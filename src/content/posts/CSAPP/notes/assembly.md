@@ -46,7 +46,7 @@ x86系列：`8086`(16位架构) $\rightarrow$ `IA-32` (32位架构) $\rightarrow
 最初的架构为16位，所以Intel用 **字(word)** 表示16位，32位为**双字(double words/long word)**，64位为**四字(quad words)**
 
 
-![image](./csapp-assembly-assembly-image-001.png)
+![image](./x86-64-general-purpose-registers.png)
 
 
 GCC生成的部分汇编代码指令都带有一个字符后缀表示操作的大小，如`movl`表示传送双字
@@ -55,7 +55,7 @@ GCC生成的部分汇编代码指令都带有一个字符后缀表示操作的�
 x86-64 CPU 中含有16个通用寄存器
 
 
-![image](./csapp-assembly-assembly-image-002.png)
+![image](./x86-64-operand-addressing-modes.png)
 
 
 8086中含有`%ax`到`%sp`8个通用寄存器
@@ -74,7 +74,7 @@ x86-64将寄存器扩展到64位(`%rax`中的"r":register整个寄存器)，并�
 有效地址被计算为$addr=Imm+R[r_b]+R[r_i]*s$，返回$M[addr]$
 
 
-![image](./csapp-assembly-assembly-image-003.png)
+![image](./x86-mov-instruction-widths.png)
 
 
 #### 数据传送指令
@@ -83,7 +83,7 @@ x86-64将寄存器扩展到64位(`%rax`中的"r":register整个寄存器)，并�
 `MOV S, D`指将数据从$S$复制到$D$，其中$S$称为源操作数，$D$称为目的操作数
 
 
-![image](./csapp-assembly-assembly-image-004.png)
+![image](./x86-zero-extension-instructions.png)
 
 
 其中源操作数可以取立即数，寄存器，内存；目的操作数可以取寄存器和内存
@@ -91,7 +91,7 @@ x86-64将寄存器扩展到64位(`%rax`中的"r":register整个寄存器)，并�
 $movabsq$作用：处理立即数时，$movq$只能传送32位立即数然后在符号扩展到64位，而$movabsq$能将64位立即数直接传送到寄存器，但只能移动立即数
 
 
-![image](./csapp-assembly-assembly-image-005.png)
+![image](./x86-sign-extension-instructions.png)
 
 
 ##### MOVZ与MOVS
@@ -99,7 +99,7 @@ $movabsq$作用：处理立即数时，$movq$只能传送32位立即数然后在
 `MOVZ` 采用零扩展进行复制，无符号数扩展
 
 
-![image](./csapp-assembly-assembly-image-006.png)
+![image](./x86-cltq-sign-extension.png)
 
 
 注：没有`movzlq`的原因是使用`movl`传送4个字节会把前面更高的4个字节全赋为0，两者等价
@@ -107,7 +107,7 @@ $movabsq$作用：处理立即数时，$movq$只能传送32位立即数然后在
 `MOVS`采用符号扩展进行复制，有符号数扩展
 
 
-![image](./csapp-assembly-assembly-image-007.png)
+![image](./x86-unary-arithmetic-instructions.png)
 
 
 ##### 压入和弹出栈数据
@@ -115,7 +115,7 @@ x86-64架构中，程序栈放在内存中某个区域，寄存器`%rsp`保存�
 不同于C语言中用数组模拟实现栈时栈顶指针指向地址最高，`%rsp`指向的栈顶地址是栈中最小的
 
 
-![image](./csapp-assembly-assembly-image-008.png)
+![image](./x86-binary-arithmetic-instructions.png)
 
 
 `pushq %rbp`等价于`subq $8,%rsp movq %rbp,(%rsp)`，即将栈顶指针向前移动8个字节，再将元素入栈
@@ -128,7 +128,7 @@ x86-64架构中，程序栈放在内存中某个区域，寄存器`%rsp`保存�
 这里主要讨论`leaq`的64位形式；其他算术逻辑指令通常能用不同后缀(b,w,l,q)指示操作大小
 
 
-![image](./csapp-assembly-assembly-image-009.png)
+![image](./x86-shift-instructions.png)
 
 
 ##### 加载有效地址
@@ -153,7 +153,7 @@ lea:load effective address
 两个64位整数相乘时需要得到128位整数再进行截断，其中16字节的数称为八字(oct words)
 
 
-![image](./csapp-assembly-assembly-image-010.png)
+![image](./x86-leaq-arithmetic-example.png)
 
 
 `imulq` 的第一种形式：`imulq S, D` 将 `D` 乘以 `S`，结果存储在 `D` 中
@@ -163,10 +163,10 @@ lea:load effective address
 当被除数为64位时，`cqto`指令通过符号扩展将被除数扩展到128位
 
 
-![image](./csapp-assembly-assembly-image-011.png)
+![image](./x86-wide-multiply-divide-instructions.png)
 
 
-![image](./csapp-assembly-assembly-image-012.png)
+![image](./x86-signed-division-assembly.png)
 
 
 `divq`(无符号除法)：事先将`%rdx`设置为0，可以使用`xorq %rdx, %rdx`
@@ -179,17 +179,17 @@ lea:load effective address
 注：`leaq`计算地址，不会设置条件码
 
 
-![image](./csapp-assembly-assembly-image-013.png)
+![image](./x86-condition-code-flags.png)
 
 
 
-![image](./csapp-assembly-assembly-image-014.png)
+![image](./x86-addition-condition-code-effects.png)
 
 
 `CMP`，`TEST`进行类似于`SUB`和`AND`的计算，不同之处在于不会将结果写入目的位置，而只会设置条件码
 
 
-![image](./csapp-assembly-assembly-image-015.png)
+![image](./x86-cmp-test-instructions.png)
 
 
 通过`CMP a, b`可以得到$b-a$对应的条件码，从而判断$a$和$b$的相对大小；通过`TEST a, a`可以将$a$的零值和符号等特征反映到条件码中
@@ -200,7 +200,7 @@ lea:load effective address
 `SET`通过条件码的组合，将是否满足后缀条件(0/1布尔值)传送到一个低位字节中
 
 
-![image](./csapp-assembly-assembly-image-016.png)
+![image](./x86-setcc-instructions.png)
 
 
 如假设$a$存储在`%rsi`中，$b$存储在`%rdi`中，执行`cmpq %rdi, %rsi`后
@@ -210,13 +210,13 @@ lea:load effective address
 将指令执行的顺序改变，跳转到一个指定的位置
 
 
-![image](./csapp-assembly-assembly-image-017.png)
+![image](./x86-jump-instructions.png)
 
 
 格式类似C中的`goto-label`：
 
 
-![image](./csapp-assembly-assembly-image-018.png)
+![image](./x86-direct-jump-example.png)
 
 
 `jmp`被称为无条件跳转，其余被称为条件跳转
@@ -226,7 +226,7 @@ lea:load effective address
 将汇编代码编码后，跳转目标通常会被编码为1、2或4字节的位移量，其值等于目标地址减去当前跳转指令的**下一条指令**地址(PC相对寻址，使得代码与位置无关，便于加载共享库)
 
 
-![image](./csapp-assembly-assembly-image-019.png)
+![image](./x86-branch-disassembly-offsets.png)
 
 
 如图所示，编码后文件每一行冒号前的数字表示该指令编码得到的第一个字节的地址
@@ -237,13 +237,13 @@ lea:load effective address
 汇编使用$JMP$实现$if-else$和$goto-lable$进行跳转被称为条件控制
 
 
-![image](./csapp-assembly-assembly-image-020.png)
+![image](./x86-if-else-goto-assembly.png)
 
 
 在一些特殊情况下，使用`CMOV`(conditional move) 的条件传送更为高效
 
 
-![image](./csapp-assembly-assembly-image-021.png)
+![image](./x86-conditional-move-instructions.png)
 
 
 `CMOV`需要加上条件后缀，操作数大小通常可由寄存器名或汇编器推断；它只支持字、双字和四字形式，不支持单字节条件传送
@@ -266,7 +266,7 @@ a = condition? x:y;
 注意，以下代码不能使用条件传送
 
 
-![image](./csapp-assembly-assembly-image-022.png)
+![image](./x86-unsafe-pointer-conditional-move.png)
 
 
 原因：不论是否为空指针，都会提前计算$0$和$*xp$，在指针为空的情况下会导致$UB$
@@ -284,19 +284,19 @@ a = condition? x:y;
 *eg.* 左侧为C源代码，右侧为与跳转表类似的C实现 (`&&`表示指向代码位置的指针)
 
 
-![image](./csapp-assembly-assembly-image-023.png)
+![image](./x86-switch-jump-table-c-code.png)
 
 
 编译得到跳转表。表中每一项保存一个目标代码地址或相对位移，相邻表项通常按指针大小排列，并不是相邻的`label`只相差1个字节
 
 
-![image](./csapp-assembly-assembly-image-024.png)
+![image](./x86-switch-jump-table-entries.png)
 
 
 汇编代码
 
 
-![image](./csapp-assembly-assembly-image-025.png)
+![image](./x86-switch-jump-table-assembly.png)
 
 
 #### 循环
@@ -304,24 +304,24 @@ a = condition? x:y;
 
 `do-while`
 
-![image](./csapp-assembly-assembly-image-026.png)
+![image](./do-while-goto-lowering.png)
 
 
 `while`有两种形式
 1. *jump to middle*(先进入循环，在循环中途再检查条件)
 
 
-![image](./csapp-assembly-assembly-image-027.png)
+![image](./while-jump-to-test-lowering.png)
 
 
 2.*guarded-do*(先检查条件，再进入循环)
 
-![image](./csapp-assembly-assembly-image-028.png)
+![image](./while-guarded-do-lowering.png)
 
 
 `for`
 
-![image](./csapp-assembly-assembly-image-029.png)
+![image](./for-loop-while-lowering.png)
 
 
 注意：当在$body-statement$中存在$continue$语句时，$continue$应当跳转到$update-expr$部分，否则可能导致死循环等问题
@@ -337,7 +337,7 @@ a = condition? x:y;
 #### 运行时栈
 
 
-![image](./csapp-assembly-assembly-image-030.png)
+![image](./x86-64-runtime-stack-frame.png)
 
 
 在过程$Q$被执行时，其调用链上的所有信息的挂起在栈上，栈中存放着传递控制，传递数据，内存分配释放的信息
@@ -351,7 +351,7 @@ a = condition? x:y;
 `ret`从栈中弹出返回地址，并将PC设置为返回地址 
 
 
-![image](./csapp-assembly-assembly-image-031.png)
+![image](./x86-call-ret-instructions.png)
 
 
 #### 传递数据
@@ -359,7 +359,7 @@ a = condition? x:y;
 $x86-64$架构中最多可以用6个寄存器来传送参数
 
 
-![image](./csapp-assembly-assembly-image-032.png)
+![image](./x86-64-argument-register-widths.png)
 
 
 当传递的参数大于6时，需要通过栈来进行传送(参数构造区)
@@ -367,11 +367,11 @@ $x86-64$架构中最多可以用6个寄存器来传送参数
 *eg.* 
 
 
-![image](./csapp-assembly-assembly-image-033.png)
+![image](./x86-64-eight-argument-procedure.png)
 
 
 
-![image](./csapp-assembly-assembly-image-034.png)
+![image](./x86-stack-passed-arguments-layout.png)
 
 
 注：通过栈传送数据时，第7个及以后的参数按从右到左的顺序压入栈中，第7个参数在栈顶（低地址），后续参数依次向高地址排列
@@ -383,15 +383,15 @@ $x86-64$架构中最多可以用6个寄存器来传送参数
 *eg.*
 
 
-![image](./csapp-assembly-assembly-image-035.png)
+![image](./x86-call-procedure-c-example.png)
 
 
 
-![image](./csapp-assembly-assembly-image-036.png)
+![image](./x86-call-procedure-assembly.png)
 
 
 
-![image](./csapp-assembly-assembly-image-037.png)
+![image](./x86-caller-local-variable-stack-frame.png)
 
 
 其中：
@@ -416,7 +416,7 @@ $x86-64$架构中最多可以用6个寄存器来传送参数
 *eg.*
 
 
-![image](./csapp-assembly-assembly-image-038.png)
+![image](./x86-callee-saved-register-example.png)
 
 
 
@@ -427,7 +427,7 @@ $x86-64$架构中最多可以用6个寄存器来传送参数
 *eg.*
 
 
-![image](./csapp-assembly-assembly-image-039.png)
+![image](./x86-recursive-factorial-assembly.png)
 
 
 当递归调用是函数体中最后执行的操作时，编译器可能进行尾递归优化，将其转换为循环
@@ -440,7 +440,7 @@ $x86-64$架构中最多可以用6个寄存器来传送参数
 例如，假设$i$的值存放在`%rcx`中，`int`数组首地址$x_A$在`%rdx`中，通过`movl (%rdx, %rcx, 4), %rax`即可将$A[i]$的值存放在`%rax`中
 
 
-![image](./csapp-assembly-assembly-image-040.png)
+![image](./x86-array-indexing-address-calculations.png)
 
 
 对于二维数组`T A[N][M]`来说，有 $\&A[i][j] = x_A + L \times i \times M + L \times j = x_A + L \times (i \times M + j)$
@@ -453,7 +453,7 @@ $x86-64$架构中最多可以用6个寄存器来传送参数
 通过指针加减移动进行寻址，而非用乘法进行寻址，提高寻址的效率
 
 
-![image](./csapp-assembly-assembly-image-041.png)
+![image](./fixed-size-matrix-dot-product-pointer-loop.png)
 
 
 对于变长数组(数组大小为表达式)：
@@ -461,7 +461,7 @@ $x86-64$架构中最多可以用6个寄存器来传送参数
 由于数组的大小不确定，无法使用`leaq`，需要使用`imul`，时间开销更大，但编译器仍然尽量使用指针提高效率
 
 
-![image](./csapp-assembly-assembly-image-042.png)
+![image](./variable-size-matrix-dot-product-pointer-loop.png)
 
 
 ### 异质的数据结构

@@ -20,7 +20,7 @@ $shell$ 中使用 `gdb bomb`进入$gdb$调试
 
 
 
-![image](./csapp-assembly-bomb-image-001.jpg)
+![image](./gdb-command-reference.jpg)
 
 
 
@@ -135,14 +135,14 @@ $shell$ 中使用 `gdb bomb`进入$gdb$调试
 
 我们随便输入一堆数，然后在断点处检查每个寄存器的值
 
-发现![image](./csapp-assembly-bomb-image-003.png)
+发现![image](./gdb-six-integer-scanf-format.png)
 
 这类似C/C++中$scanf$的占位符，结合函数名和剩下6个参数寄存器，我们大胆推测这个函数以$\%esi$为占位符，读入六个$int$并存放在其他六个参数寄存器中，依次在$\%rdx$，$\%rcx$，$\%r8$，$\%r9$和栈中的两个位置 
 
 我们手动模拟可以得到以下结果，设最初$\%rsp$指向的地址为$p$
 
 
-![image](./csapp-assembly-bomb-image-002.jpg)
+![image](./read-six-numbers-register-trace.jpg)
 
 
 可以使用gdb进行验证，同时访问$(\%rax)$的值发现是读入的数的个数
@@ -244,7 +244,7 @@ $shell$ 中使用 `gdb bomb`进入$gdb$调试
 
 一个单位为4字节32位，16个单位即为8个64位的指针，结果如下
 
-![image](./csapp-assembly-bomb-image-004.png)
+![image](./gdb-phase-three-jump-table.png)
 
 注意$x86-64$下使用的是小端法
 
@@ -531,7 +531,7 @@ x=3 y=3 rax=0
 
 这个变量名$node1$有点意思，进一步地，我们使用 `(gdb) x/16x 0x6032d0` 可以发现输出的结果为
 
-![image](./csapp-assembly-bomb-image-005.png)
+![image](./gdb-phase-six-linked-list-nodes.png)
 
 我们发现，除了$node_6$每个$node_i$的第三个变量都是$node_{i+1}$的地址，可以联想到链表
 
@@ -548,7 +548,7 @@ struct node {
 
 链表的结构如下图
 
-![image](./csapp-assembly-bomb-image-006.png)
+![image](./gdb-phase-six-transformed-input.png)
 
 接下来我们按汇编代码手玩发现，首先通过$\%rcx$指向第$i$个数的地址($i$从0取到5)
 
@@ -607,7 +607,7 @@ struct node {
 
 ### 结果
 
-![image](./csapp-assembly-bomb-image-007.png)
+![image](./bomb-all-phases-defused.png)
 
 完结撒花！
 

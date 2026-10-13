@@ -18,7 +18,7 @@ linux下可以使用$GPROF$定量衡量程序中函数的运行时间
 `linux> ./test`会运行该文件并生成`gmon.out`的相关数据文件，通过`linux> gprof test`进行分析
 
 
-![image](./csapp-optimize-optimize-image-001.png)
+![image](./gprof-primality-flat-profile.png)
 
 
 从左到右的每一列分别为函数运行时间占比，总累积运行时间，当前函数累积运行时间，被调用次数，每次调用平均运行时间
@@ -92,7 +92,7 @@ int f2() {
 更具体地说，现代处理器中有多个功能单元，不同功能单元被设计处理不同的操作，以下是一个例子
 
 
-![image](./csapp-optimize-optimize-image-002.png)
+![image](./haswell-execution-unit-functions.png)
 
 
 处理器为了乱序执行的正确性，会在一条指令的所有源操作数都准备就绪，且所需要的功能单元有空闲的时候，将其用调度器发送出去并执行
@@ -106,12 +106,12 @@ int f2() {
 最大吞吐量：发射时间的倒数
 
 
-![image](./csapp-optimize-optimize-image-003.png)
+![image](./haswell-arithmetic-latency-throughput.png)
 
 
 延迟界限给出了单个操作CPE的下界，而吞吐量界限给出的是处理一系列操作时CPE的下界
 
-![image](./csapp-optimize-optimize-image-004.png)
+![image](./arithmetic-latency-throughput-bounds.png)
 
 如整数乘法只有一个乘法单元，故吞吐量界限为1
 整数加法虽然有四个加法单元，但是受限于只有两个加载单元，导致每个时钟周期最多取两个数据，所以吞吐量界限为0.5
@@ -121,7 +121,7 @@ int f2() {
 以下代码以数组变量累积为例，给出最原始的版本
 
 
-![image](./csapp-optimize-optimize-image-005.png)
+![image](./vector-combine-baseline.png)
 
 
 #### 减少重复的运算和调用
@@ -142,17 +142,17 @@ int f2() {
 修改后的C代码如下
 
 
-![image](./csapp-optimize-optimize-image-006.png)
+![image](./vector-combine-local-accumulator.png)
 
 
 优化前后代码编译生成的汇编代码如下
 
 
-![image](./csapp-optimize-optimize-image-007.png)
+![image](./vector-combine-memory-accumulator-assembly.png)
 
 
 
-![image](./csapp-optimize-optimize-image-008.png)
+![image](./vector-combine-register-accumulator-assembly.png)
 
 
 可以发现，优化后的代码通过将局部变量存放在寄存器中，避免了对于指针指向内存的频繁访问与写回
@@ -163,7 +163,7 @@ int f2() {
 以下是源代码$2\times1$循环展开后得到的代码
 
 
-![image](./csapp-optimize-optimize-image-009.png)
+![image](./vector-combine-two-way-loop-unrolling.png)
 
 
 循环展开减少了循环开销操作，即减少了对于条件判断和循环变量增加的次数进而提高性能

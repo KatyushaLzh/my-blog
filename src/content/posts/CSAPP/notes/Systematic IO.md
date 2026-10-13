@@ -18,7 +18,7 @@ sourceLink: ""
 `Linux`目录层次构成的是一个树形结构，根节点为 `/` 根目录
 
 
-![image](./csapp-systematic-io-systematic-io-image-001.png)
+![image](./linux-directory-hierarchy.png)
 
 
 此处介绍三种最常见的文件
@@ -32,7 +32,7 @@ sourceLink: ""
 `open`函数实现了打开或新建一个文件
 
 
-![image](./csapp-systematic-io-systematic-io-image-002.png)
+![image](./unix-open-api.png)
 
 
 `open`函数打开文件`filename`，采用`flags`的访问方式，当创建一个新文件时，`mode`参数指明了它的访问权限位
@@ -46,7 +46,7 @@ sourceLink: ""
 `mode`和`umask`的取值可以如下，同样支持或运算
 
 
-![image](./csapp-systematic-io-systematic-io-image-003.png)
+![image](./file-permission-bit-masks.png)
 
 
 `open`函数的返回值为一个整数的文件描述符。每个进程通常都会打开三个文件`STDIN_FILENO`，`STDOUT_FILENO`，`STDERR_FILENO`，文件描述符分别为0，1，2
@@ -56,7 +56,7 @@ sourceLink: ""
 ### 文件的读写
 
 
-![image](./csapp-systematic-io-systematic-io-image-004.png)
+![image](./unix-read-write-api.png)
 
 
 其中，`fd`为对应文件的描述符，`buf`为从文件读的数据存放到的地址指针或要写入文件的数据的地址指针，n为最大读写字节数
@@ -72,13 +72,13 @@ sourceLink: ""
 原型如下
 
 
-![image](./csapp-systematic-io-systematic-io-image-005.png)
+![image](./rio-readn-writen-api.png)
 
 
 实现如下，输入函数会在被信号中断后继续进行，使用了`while`循环反复调用`read`函数直到读入要求的字节数，除非遇到了`EOF`；输出函数类似
 
 
-![image](./csapp-systematic-io-systematic-io-image-006.png)
+![image](./rio-readn-writen-implementation.png)
 
 
 #### 带缓冲的输入函数
@@ -87,21 +87,21 @@ sourceLink: ""
 函数原型如下
 
 
-![image](./csapp-systematic-io-systematic-io-image-007.png)
+![image](./rio-buffered-read-api.png)
 
 
 具体实现如下
 
 
-![image](./csapp-systematic-io-systematic-io-image-008.png)
+![image](./rio-buffer-structure-initialization.png)
 
 
 
-![image](./csapp-systematic-io-systematic-io-image-009.png)
+![image](./rio-internal-read-implementation.png)
 
 
 
-![image](./csapp-systematic-io-systematic-io-image-010.png)
+![image](./rio-readlineb-readnb-implementation.png)
 
 
 ### 读取文件信息
@@ -109,11 +109,11 @@ sourceLink: ""
 文件的信息，也称为文件的元数据
 
 
-![image](./csapp-systematic-io-systematic-io-image-011.png)
+![image](./stat-fstat-api.png)
 
 
 
-![image](./csapp-systematic-io-systematic-io-image-012.png)
+![image](./stat-metadata-structure.png)
 
 
 ### 目录的读取
@@ -121,19 +121,19 @@ sourceLink: ""
 使用 `opendir`打开一个目录
 
 
-![image](./csapp-systematic-io-systematic-io-image-013.png)
+![image](./opendir-api.png)
 
 
 注意`opendir`返回的是一个`DIR *`目录流指针；`readdir`返回的目录项是`struct dirent *`，该结构体定义如下
 
 
-![image](./csapp-systematic-io-systematic-io-image-014.png)
+![image](./dirent-structure.png)
 
 
 使用`readdir`读取下一个目录项
 
 
-![image](./csapp-systematic-io-systematic-io-image-015.png)
+![image](./readdir-api.png)
 
 
 使用`closedir`关闭一个目录
@@ -143,13 +143,13 @@ sourceLink: ""
 每个进程维护了一个描述符表，每个打开文件的操作与其中描述符相同的表项对应，每个表目都指向了打开文件表的一个表项。打开文件表由所有进程共享，它存储了一个被打开文件的打开次数和位置，并指向由所有进程共享的，存放了当前文件元数据的v-node表的对应表项
 
 
-![image](./csapp-systematic-io-systematic-io-image-016.png)
+![image](./kernel-open-file-tables.png)
 
 
 当执行`fork`时，子进程也会复制父进程的描述符表
 
 
-![image](./csapp-systematic-io-systematic-io-image-017.png)
+![image](./fork-shared-open-file-tables.png)
 
 
 #### I/O重定向
@@ -158,13 +158,13 @@ sourceLink: ""
 对应的 `dup2`用户级调用原型如下，实现了`oldfd`描述表表项对`newfd`表项的覆盖
 
 
-![image](./csapp-systematic-io-systematic-io-image-018.png)
+![image](./dup2-api.png)
 
 
 以`dup2(4,1)`为例，实现了对描述符为1的`STDOUT`标准输出的重定向，重定向到了描述符为4的打开操作对应的文件
 
 
-![image](./csapp-systematic-io-systematic-io-image-019.png)
+![image](./dup2-stdout-redirection-tables.png)
 
 
 ### I/O函数的使用

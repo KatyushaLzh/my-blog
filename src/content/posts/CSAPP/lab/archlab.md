@@ -509,7 +509,7 @@ cd ../ptest; make SIM=../pipe/psim TFLAGS=-i
 
 
 
-![image](./csapp-architecture-archlab-image-001.jpg)
+![image](./ncopy-cycles-per-element-score-formula.jpg)
 
 
 C代码如下，函数的功能是将src开始的len个元素全部拷贝到dst对应地址中，并返回源数据中正数个数

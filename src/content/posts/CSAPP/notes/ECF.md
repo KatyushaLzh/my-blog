@@ -19,7 +19,7 @@ sourceLink: ""
 其机制如下
 
 
-![image](./csapp-ecf-ecf-image-001.jpg)
+![image](./exception-control-transfer.jpg)
 
 
 假设处理器正在执行指令$I_{cur}$，此时发生一个事件(如除0，数值溢出，直接内存访问结束)，处理器会检测到该事件的发生，并通过异常表进行控制转移，跳转到相应的异常处理程序进行处理，然后返回继续执行指令或终止程序
@@ -33,7 +33,7 @@ sourceLink: ""
 3. 函数运行在用户模式下；而异常处理程序运行在内核模式下，有着对系统资源更完全的访问权
 
 
-![image](./csapp-ecf-ecf-image-002.jpg)
+![image](./exception-table-indexing.jpg)
 
 
 #### 异常的类型
@@ -46,7 +46,7 @@ I/O设备通过向处理器芯片上的引脚发信号，并将异常号放入�
 其流程如下：
 
 
-![image](./csapp-ecf-ecf-image-003.jpg)
+![image](./faulting-instruction-restart.jpg)
 
 
 我们以DMA直接内存访问结束为例，当磁盘访问完成时，处理器收到了对应的异常码，在调用异常处理程序后继续处理下一条指令
@@ -57,14 +57,14 @@ I/O设备通过向处理器芯片上的引脚发信号，并将异常号放入�
 汇编中，使用`syscall`进行系统调用，触发一个到异常处理程序的陷阱
 
 
-![image](./csapp-ecf-ecf-image-004.jpg)
+![image](./process-context-switching.jpg)
 
 
 ##### 故障
 故障是处理器处理中出现了错误情况，它可能在被异常处理程序修正后成功重新运行(如缺页异常)，也可能无法被修复导致程序终止
 
 
-![image](./csapp-ecf-ecf-image-005.jpg)
+![image](./concurrent-process-time-slices.jpg)
 
 
 注意：导致故障时当前指令尚未完成，所以如果成功修复后，需要跳转到当前指令重新执行，而非下一条指令
@@ -76,7 +76,7 @@ I/O设备通过向处理器芯片上的引脚发信号，并将异常号放入�
 我们以x86-64为例，有256个异常号，其中0～31由架构定义，对x86-64架构都一样；而32～255由操作系统定义，通常用于中断和陷阱
 
 
-![image](./csapp-ecf-ecf-image-006.jpg)
+![image](./fork-api.jpg)
 
 
 其中除法错误和一般保护故障(常表现为段错误)通常表示程序逻辑或权限错误，内核一般会向进程发送信号并终止它，而不是静默修复后继续运行
@@ -88,18 +88,18 @@ linux为系统调用生成了一张跳转表，每个系统调用都有一个唯
 
 常见系统调用的跳转表如下
 
-![image](./csapp-ecf-ecf-image-007.jpg)
+![image](./wait-waitpid-api.jpg)
 
 
 hello world 汇编实现
 
-![image](./csapp-ecf-ecf-image-008.jpg)
+![image](./execve-api.jpg)
 
 
 事实上，函数调用在高级语言中被高度封装成了函数(如`write`封装为`printf`)，但是我们也可以通过相关接口直接进行系统调用
 
 
-![image](./csapp-ecf-ecf-image-009.jpg)
+![image](./execve-wrapper.jpg)
 
 
 ### 进程
@@ -111,7 +111,7 @@ hello world 汇编实现
 处理器通过短暂，频繁地中断和切换其处理的进程，创造出一种所有进程都在同时进行的宏观表象
 
 
-![image](./csapp-ecf-ecf-image-010.jpg)
+![image](./fork-twice-process-tree.jpg)
 
 
 实际上，进程轮流占有处理器，执行一段时间后被抢占，其他进程进行处理。从宏观上来看，就好像每个进程都独占处理器，只是中间发生一些周期性的停顿
@@ -125,7 +125,7 @@ hello world 汇编实现
 操作系统通过为每个进程分配虚拟地址空间，使得宏观上就像每个进程占用整个系统地址空间
 
 
-![image](./csapp-ecf-ecf-image-011.jpg)
+![image](./fork-in-child-process-tree.jpg)
 
 
 #### 用户模式和内核模式
@@ -141,7 +141,7 @@ hello world 汇编实现
 中断也可能引起上下文切换，如系统都能周期性地发出中断信号，让内核判定当前进程已经进行了较长时间，应该进行上下文切换
 
 
-![image](./csapp-ecf-ecf-image-012.jpg)
+![image](./fork-two-calls-process-tree.jpg)
 
 
 ### 进程控制
@@ -169,14 +169,14 @@ pid_t fork();
 `fork`创建一个子进程，该子进程被创建时几乎是父进程的一份拷贝，享有私有地址空间，与父进程并发地运行。当前进程为父进程的时候，返回值为创建的子进程的pid；当前进程为新的子进程的时候，返回值为0；由此可以判断当前执行的是子进程还是父进程。子进程与父进程交替执行的顺序未知，由调度器决定
 
 
-![image](./csapp-ecf-ecf-image-013.jpg)
+![image](./fork-parent-child-output.jpg)
 
 
 同时在shell中，也可以为了对一行命令行求值创建进程，该进程被称为**任务**，shell为每个任务创建一个新的进程组
 通过`|` (pipe) 将多个进程连接起来，如`linux> ls | sort`
 
 
-![image](./csapp-ecf-ecf-image-014.jpg)
+![image](./shell-foreground-background-process-groups.jpg)
 
 
 #### 子进程的回收
@@ -200,7 +200,7 @@ options能指定该函数的行为，0为默认行为，可以通过以下定义
 在该函数调用完毕后，statusp指向的值会被改为导致子进程返回的信息，可以通过以下几个宏进行查看
 
 
-![image](./csapp-ecf-ecf-image-015.jpg)
+![image](./waitpid-status-macros.jpg)
 
 
 也可以使用`wait(int *statusp)`函数，该函数等价于`waitpid(-1, statusp, 0)`
@@ -208,7 +208,7 @@ options能指定该函数的行为，0为默认行为，可以通过以下定义
 以下是`waitpid`的一个例子
 
 
-![image](./csapp-ecf-ecf-image-016.jpg)
+![image](./waitpid-unordered-child-reaping.jpg)
 
 
 父进程和子进程执行顺序未知，子进程可能尚未执行完exit函数，需要重复将父进程挂起等待然后回收终止的子进程
@@ -231,11 +231,11 @@ int execve(const char *filename, const char *argv[], const char *envp[])
 `execve`调用启动代码，将控制和相关参数传递给`filename`的`main`函数
 
 
-![image](./csapp-ecf-ecf-image-017.jpg)
+![image](./argv-envp-pointer-arrays.jpg)
 
 
 
-![image](./csapp-ecf-ecf-image-018.jpg)
+![image](./initial-user-stack-layout.jpg)
 
 
 linux下，C提供了`getenv`，`setenv`，`unsetenv`等函数对当前进程的环境变量进行修改
@@ -247,14 +247,14 @@ linux下，C提供了`getenv`，`setenv`，`unsetenv`等函数对当前进程的
 例如：shell 中 `Ctrl+C`使内核向前台进程组发送`SIGINT`信号请求终止；`Ctrl+Z`使内核发送`SIGTSTP`信号请求挂起
 
 
-![image](./csapp-ecf-ecf-image-019.jpg)
+![image](./linux-signal-default-actions.jpg)
 
 
 #### 信号处理的流程
 当一个系统事件发生时，内核会将对应的信号发送给相应的进程，该进程以某种方式对信号做出回应，称为接收了该信号
 
 
-![image](./csapp-ecf-ecf-image-020.jpg)
+![image](./signal-handler-control-transfer.jpg)
 
 
 每个进程都有两个内核维护的信号集：`pending`未决信号集 和 `blocked` 阻塞信号集
@@ -315,13 +315,13 @@ sighandler_t signal(int signum, sighandler_t handler);
 3. 传入一个自定义的函数，将行为设置为该函数
 
 
-![image](./csapp-ecf-ecf-image-021.jpg)
+![image](./sigint-handler-pause-example.jpg)
 
 
 事实上，由于较老的Unix系统对信号的处理行为不同，`signal`函数可移植性比较差，而`sigaction`函数具有较好的可移植性，但是调用比较复杂。我们可以通过采用`sigaction`作为实现，定义与`signal`行为相同的函数
 
 
-![image](./csapp-ecf-ecf-image-022.jpg)
+![image](./sigaction-signal-wrapper.jpg)
 
 
 #### 信号的阻塞
@@ -329,13 +329,13 @@ sighandler_t signal(int signum, sighandler_t handler);
 显式阻塞机制：使用 `sigprocmask`对`blocked`位进行修改
 
 
-![image](./csapp-ecf-ecf-image-023.jpg)
+![image](./sigprocmask-signal-set-api.jpg)
 
 
 注意：对`blocked`的修改，需要自己定义一个`sigset_t`的变量，通过`sigfillset`等函数对其进行构造，在将该变量作为参数传入`sigprocmask`中，实现对`blocked`的修改
 
 
-![image](./csapp-ecf-ecf-image-024.jpg)
+![image](./temporarily-blocking-sigint.jpg)
 
 
 #### 信号处理程序的编写原则
@@ -344,7 +344,7 @@ sighandler_t signal(int signum, sighandler_t handler);
 2. 采用异步信号安全的函数，这些函数不会被中断，或者是可重入的
 
 
-![image](./csapp-ecf-ecf-image-025.jpg)
+![image](./async-signal-safe-functions.jpg)
 
 
 3.运行前保存，运行后恢复`errno`：信号处理程序可能会修改`errno`的值，主函数中某些函数返回值可能与该值相关
@@ -354,7 +354,7 @@ sighandler_t signal(int signum, sighandler_t handler);
 例如以下的对`SIGCHLD`子进程终止的信号处理程序就使用`while`对信号进行多次处理，防止了僵尸进程
 
 
-![image](./csapp-ecf-ecf-image-026.jpg)
+![image](./sigchld-waitpid-handler.jpg)
 
 
 7.进行流同步：由于信号处理程序和主函数并发运行，当两者之间存在依赖关系时，如主函数先执行`add`操作，信号处理程序执行`del`操作，如果信号处理程序先执行，就可能出错，我们称之为发生了**竞争**。我们可以通过将对应的信号阻塞，当主函数执行完毕后，再取消阻塞，就保证了流同步
@@ -383,11 +383,11 @@ int sigsuspend(const sigset_t *mask);
 该函数暂时地将`blocked`设置为`mask`，并执行`pause`，结束后恢复原来的`blocked`，且该函数具有原子性
 
 
-![image](./csapp-ecf-ecf-image-027.jpg)
+![image](./sigsuspend-atomic-unblock-wait.jpg)
 
 
 
-![image](./csapp-ecf-ecf-image-028.jpg)
+![image](./sigsuspend-sigchld-wait-example.jpg)
 
 
 ### 非本地跳转
@@ -406,16 +406,16 @@ int longjmp(jmp_buf env, int retval);
 通过非本地跳转，我们得以实现嵌套函数的退出
 
 
-![image](./csapp-ecf-ecf-image-029.jpg)
+![image](./setjmp-recovery-declarations.jpg)
 
 
 
-![image](./csapp-ecf-ecf-image-030.jpg)
+![image](./setjmp-longjmp-nested-recovery.jpg)
 
 
 通过`sigsetjmp(env, savesigs)`配合`siglongjmp`，我们可以在需要时保存并恢复信号屏蔽字`blocked`；未决信号集`pending`不会作为跳转环境保存
 
 
-![image](./csapp-ecf-ecf-image-031.jpg)
+![image](./sigint-siglongjmp-restart.jpg)
 
 

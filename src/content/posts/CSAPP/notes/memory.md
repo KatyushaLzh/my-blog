@@ -16,7 +16,7 @@ sourceLink: ""
 存储器层次由快到慢分别为寄存器，高速缓存存储器，主存储器，本地二级存储器，远程二级存储器
 
 
-![image](./csapp-memory-memory-image-001.jpg)
+![image](./sram-dram-memory-characteristics.jpg)
 
 
 ### 存储技术
@@ -27,7 +27,7 @@ SRAM 使用六晶体管电路实现，具有双稳态性，只要有电就会保
 DRAM 对干扰十分敏感，易漏电，必须周期性刷新以保持数据；纠错码可以检测或纠正部分位错误，但不能替代刷新
 
 
-![image](./csapp-memory-memory-image-002.jpg)
+![image](./disk-platter-track-sector-layout.jpg)
 
 
 ##### DRAM的读写
@@ -59,7 +59,7 @@ ROM中的程序被称为固件(firmware)，在通电下运行，如PC的BIOS
 以读事务为例
 
 
-![image](./csapp-memory-memory-image-003.jpg)
+![image](./disk-sector-read-steps.jpg)
 
 
 #### 磁盘的存储
@@ -70,7 +70,7 @@ ROM中的程序被称为固件(firmware)，在通电下运行，如PC的BIOS
 我们用**柱面**称呼到主轴间距相等的磁道构成的集合
 
 
-![image](./csapp-memory-memory-image-004.jpg)
+![image](./disk-access-time-components.jpg)
 
 
 ##### 磁盘的存储
@@ -87,7 +87,7 @@ ROM中的程序被称为固件(firmware)，在通电下运行，如PC的BIOS
 磁盘中的**读/写头**连接到外围的传动臂上，通过绕着传动臂转动，进行寻道以定位到某个给定的磁道上，当磁道上的某个扇区旋转到读写头正下方时，就可以对其进行读写操作
 
 
-![image](./csapp-memory-memory-image-005.jpg)
+![image](./rotating-disk-logical-block-layout.jpg)
 
 
 对一个扇区的访问时间，取决于一下三个部分：
@@ -97,7 +97,7 @@ ROM中的程序被称为固件(firmware)，在通电下运行，如PC的BIOS
 
 计算的一个示例
 
-![image](./csapp-memory-memory-image-006.jpg)
+![image](./cpu-memory-disk-io-bus.jpg)
 
 
 可见读写的时间主要取决于寻道时间和旋转时间
@@ -117,7 +117,7 @@ ROM中的程序被称为固件(firmware)，在通电下运行，如PC的BIOS
 4.其他设备如网络适配器等通过主板上的拓展槽连接到I/O总线中
 
 
-![image](./csapp-memory-memory-image-007.jpg)
+![image](./memory-hierarchy-storage-levels.jpg)
 
 
 #### CPU与IO设备的交互
@@ -128,7 +128,7 @@ CPU通过特定的地址与I/O设备通信。这些地址可能属于独立的I/
 DMA传送完成后，磁盘控制器向CPU发送一个中断信号，处理器转入相应的中断处理程序记录I/O操作已经完成，随后再恢复被中断的控制流
 
 
-![image](./csapp-memory-memory-image-008.jpg)
+![image](./cache-block-hits-and-misses.jpg)
 
 
 #### 固态硬盘
@@ -138,7 +138,7 @@ DMA传送完成后，磁盘控制器向CPU发送一个中断信号，处理器�
 一个闪存由B个块构成，每个块内又有P个页，只有当一个页所在的块被擦除(所有位都被设置为1)才能对该页进行写，这导致SSD写的效率低于读。同时由于闪存基于EEPROM，所以写入次数有限，现代SSD采用了复杂的逻辑，减小了擦写块的时间代价，以及尝试让块的擦写尽量均匀，增加了SSD的寿命
 
 
-![image](./csapp-memory-memory-image-009.jpg)
+![image](./generic-cache-set-line-layout.jpg)
 
 
 SSD价格上比机械硬盘稍贵，并且写入次数有限，但是SSD读写速度远高于机械硬盘，并且随着SSD越来越受欢迎，其与机械硬盘价格差距也越来越小
@@ -183,7 +183,7 @@ for (int j = 1; j <= n; j++) {
 相邻的两层会以相同大小的**块**作为传输单位，更上层的存储器维护的是更底层存储器中若干块的副本，数据以块为基本单位在两层之间传输。不相邻层次块的大小可能不同
 
 
-![image](./csapp-memory-memory-image-010.jpg)
+![image](./cache-read-address-bit-fields.jpg)
 
 
 ##### 缓存访问概述
@@ -209,7 +209,7 @@ for (int j = 1; j <= n; j++) {
 考虑将这个$A$分成三个部分，分别是前$t$位作为标记，中间$s$位作为组索引，最后$b$位作为字节偏移值，满足$m=t+s+b$
 
 
-![image](./csapp-memory-memory-image-011.jpg)
+![image](./direct-mapped-cache-line-lookup.jpg)
 
 
 通过组索引定位到缓存中的某一组，再并行地与组中的每一行进行比较，当这一行有效位为1且标记和标记位相等时，以字节偏移值为下标读出的这个字节就是需要读出的值
@@ -240,7 +240,7 @@ for (int j = 1; j <= n; j++) {
 高速缓存既保存数据(d-cache)，又保存指令(i-cache)，也有数据和指令都保存的统一高速缓存，由于d-cache读写都需要，而i-cache只读，所以分开设计，采用不同的访问模式来优化这两种缓存
 
 
-![image](./csapp-memory-memory-image-012.jpg)
+![image](./two-way-set-associative-cache-lookup.jpg)
 
 
 #### 影响缓存效率的因素
@@ -260,7 +260,7 @@ for (int j = 1; j <= n; j++) {
 我们以矩阵乘法的六种循环顺序为例
 
 
-![image](./csapp-memory-memory-image-013.jpg)
+![image](./cache-write-policy-combinations.jpg)
 
 
 判断程序的性能，我们往往只需要关注最内层循环体的效率，可以先定性地来看
@@ -272,7 +272,7 @@ kij和ikj对B数组和C数组都采用了步长为1的访问
 定量地来看，我们假设缓存可以存放4个double，计算得到的效率表如下，这也印证了我们的分析
 
 
-![image](./csapp-memory-memory-image-014.jpg)
+![image](./cache-block-size-miss-rate.jpg)
 
 
 #### 使用分块技术
