@@ -1,0 +1,1 @@
+const e="/api/meting?server=:server&type=:type&id=:id&r=:r&only_playable=true",t={enable:!0,showFloatingPlayer:!0,floatingEntryMode:"fab",mode:"local",meting_api:e,id:"18093458299",server:"netease",type:"playlist"};export{t as m};
