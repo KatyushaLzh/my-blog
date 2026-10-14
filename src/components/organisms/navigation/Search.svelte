@@ -11,7 +11,7 @@ import type { SearchResult } from "@/global";
 let keywordDesktop = $state("");
 let keywordMobile = $state("");
 let result: SearchResult[] = $state([]);
-let pagefindLoaded = false;
+let pagefindLoaded = $state(false);
 let initialized = $state(false);
 let isDesktopSearchExpanded = $state(false);
 let debounceTimer: NodeJS.Timeout;
@@ -117,7 +117,7 @@ const search = async (keyword: string, isDesktop: boolean): Promise<void> => {
 		result = [];
 		return;
 	}
-	if (!initialized) {
+	if (!initialized || (import.meta.env.PROD && !pagefindLoaded)) {
 		return;
 	}
 	try {
@@ -193,7 +193,7 @@ onMount(() => {
 });
 
 $effect(() => {
-	if (initialized) {
+	if (initialized && (import.meta.env.DEV || pagefindLoaded)) {
 		const keyword = keywordDesktop || keywordMobile;
 		const isDesktop = !!keywordDesktop || isDesktopSearchExpanded;
 

@@ -396,6 +396,18 @@ fatal: could not read Username for 'https://github.com'
 3. 验证 `CONTENT_REPO_URL` 是否正确
 4. 清除部署平台的缓存并重新部署
 
+### 问题 8: 首次搜索需要重新输入才显示结果
+
+**原因**: Pagefind 按需加载。如果关键词先于索引加载完成输入，搜索组件必须在加载就绪后重新执行当前查询，不能只监听关键词变化。
+
+**实现**: `Search.svelte` 使用 `$state` 跟踪 `pagefindLoaded`，生产环境等待索引就绪后再触发查询。参见 [Svelte 状态](https://svelte.dev/docs/svelte/$state) 与 [effect 依赖](https://svelte.dev/docs/svelte/$effect#Understanding-dependencies)。
+
+**验证**:
+1. 使用生产构建或已部署站点；开发模式不使用真实搜索索引。
+2. 在桌面和手机视口分别打开搜索，延迟 `/pagefind/pagefind.js` 加载并立即输入 `CS144`。
+3. 索引加载完成后，无需修改关键词，应出现包含「CS144 Checkpoint 0：网络热身与字节流」的结果。
+4. 改搜 `CSAPP` 应显示对应文章；清空输入应移除结果。
+
 ---
 
 ## 📋 环境变量参考
